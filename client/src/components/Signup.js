@@ -18,33 +18,6 @@ class Signup extends Component {
   handleSubmit = event => {
     event.preventDefault();
 
-<<<<<<< HEAD
-    signup(this.state.username, this.state.password).then(data => {
-      axios
-        .post("auth/signup", {
-          username: this.state.username,
-          password: this.state.password
-        })
-        .then(response => {
-          return response.data;
-        })
-        .catch(err => {
-          return err.response.data;
-        });
-      // if (data.message) {
-      //   // handle errors
-      //   this.setState({
-      //     error: data.message
-      //   });
-      // } else {
-      //   // no error
-      //   // lift the data up to the App state
-      //   this.props.setUser(data);
-      //   // redirect to "/projects"
-      //   this.props.history.push("/projects");
-      // }
-    });
-=======
     axios
       .post("/auth/signup", {
         username: this.state.username,
@@ -57,7 +30,6 @@ class Signup extends Component {
       .catch(err => {
         return err.response.data;
       });
->>>>>>> d454e99cac30e6f8fbedee28273bdb4300e416bc
   };
 
   render() {
