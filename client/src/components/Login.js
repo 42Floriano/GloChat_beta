@@ -17,6 +17,7 @@ class Login extends Component {
 
   handleSubmit = event => {
     event.preventDefault();
+<<<<<<< HEAD
 
     login(this.state.username, this.state.password).then(data => {
       axios
@@ -43,6 +44,21 @@ class Login extends Component {
       //   this.props.history.push("/projects");
       // }
     });
+=======
+    axios
+      .post("/auth/login", {
+        username: this.state.username,
+        password: this.state.password
+      })
+      .then(response => {
+        console.log(response.data);
+
+        return response.data;
+      })
+      .catch(err => {
+        return err.response.data;
+      });
+>>>>>>> d454e99cac30e6f8fbedee28273bdb4300e416bc
   };
 
   render() {
