@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Navbar as Nav } from "react-bootstrap";
-import { logout } from "../services/auth";
+
 
 const Navbar = props => {
   return (
@@ -9,8 +9,8 @@ const Navbar = props => {
       <React.Fragment>
         <Link to="/signup">Signup</Link>
         <Link to="/login">Login</Link>
+        <Link to="/chat">Chat</Link>
       </React.Fragment>
-      )}
     </Nav>
   );
 };
