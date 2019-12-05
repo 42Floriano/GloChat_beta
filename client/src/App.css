@@ -4,17 +4,15 @@ body {
     justify-content: center;
     min-height: 100vh;
     background: #27ae60;
-    font-family: "proxima-nova", "Source Sans Pro", sans-serif;
+    font-family:  Helvetica, Arial, sans-serif;
     font-size: 1em;
     letter-spacing: 0.1px;
     color: #32465a;
-    text-rendering: optimizeLegibility;
-    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.004);
-    -webkit-font-smoothing: antialiased;
   }
-  
+
+
   #frame {
-    width: 95%;
+    width: 100%;
     min-width: 360px;
     max-width: 1000px;
     height: 92vh;
@@ -22,12 +20,56 @@ body {
     max-height: 720px;
     background: #E6EAEA;
   }
+
   @media screen and (max-width: 360px) {
     #frame {
       width: 100%;
       height: 100vh;
     }
   }
+
+  @media screen and (max-width: 735px) {
+    #frame #sidepanel {
+      width: 10%;
+      min-width: 58px;
+      margin: 0 auto;
+      padding: 5px 0 0 0;
+    }
+
+    #frame #sidepanel #profile .wrap {
+      height: 55px;
+    }
+
+    #frame .content .message-input .wrap button {
+      padding: 16px 0;
+    }
+
+    #frame #sidepanel #profile .wrap img {
+      width: 40px;
+      margin-left: 4px;
+    }
+    #frame #sidepanel #profile .wrap p {
+      display: none;
+    }
+
+    #frame #sidepanel #profile .wrap i.expand-button {
+      display: none;
+    }
+    #frame #sidepanel #profile .wrap #status-options {
+      width: 58px;
+      margin-top: 57px;
+    }
+    #frame #sidepanel #profile .wrap #status-options.active {
+      margin-top: 62px;
+    }
+    #frame #sidepanel #profile .wrap #status-options ul li span.status-circle {
+      width: 14px;
+      height: 14px;
+    }
+  }
+
+  
+
   #frame #sidepanel {
     float: left;
     min-width: 280px;
@@ -39,24 +81,25 @@ body {
     overflow: hidden;
     position: relative;
   }
-  @media screen and (max-width: 735px) {
-    #frame #sidepanel {
-      width: 58px;
-      min-width: 58px;
-    }
-  }
+
+  
   #frame #sidepanel #profile {
     width: 80%;
     margin: 25px auto;
   }
-  @media screen and (max-width: 735px) {
+
+  
+
+  /* @media screen and (max-width: 735px) {
     #frame #sidepanel #profile {
       width: 100%;
       margin: 0 auto;
       padding: 5px 0 0 0;
       background: #32465a;
     }
-  }
+  } */
+
+
   #frame #sidepanel #profile.expanded .wrap {
     height: 210px;
     line-height: initial;
@@ -81,11 +124,9 @@ body {
     -webkit-transition: 0.3s height ease;
     transition: 0.3s height ease;
   }
-  @media screen and (max-width: 735px) {
-    #frame #sidepanel #profile .wrap {
-      height: 55px;
-    }
-  }
+  /* @media screen and (max-width: 735px) {
+    
+  } */
   #frame #sidepanel #profile .wrap img {
     width: 50px;
     border-radius: 50%;
@@ -99,12 +140,9 @@ body {
     -webkit-transition: 0.3s border ease;
     transition: 0.3s border ease;
   }
-  @media screen and (max-width: 735px) {
-    #frame #sidepanel #profile .wrap img {
-      width: 40px;
-      margin-left: 4px;
-    }
-  }
+  /* @media screen and (max-width: 735px) {
+    
+  } */
   #frame #sidepanel #profile .wrap img.online {
     border: 2px solid #2ecc71;
   }
@@ -121,11 +159,9 @@ body {
     float: left;
     margin-left: 15px;
   }
-  @media screen and (max-width: 735px) {
-    #frame #sidepanel #profile .wrap p {
-      display: none;
-    }
-  }
+  /* @media screen and (max-width: 735px) {
+  
+  } */
   #frame #sidepanel #profile .wrap i.expand-button {
     float: right;
     margin-top: 23px;
@@ -133,11 +169,9 @@ body {
     cursor: pointer;
     color: #435f7a;
   }
-  @media screen and (max-width: 735px) {
-    #frame #sidepanel #profile .wrap i.expand-button {
-      display: none;
-    }
-  }
+  /* @media screen and (max-width: 735px) {
+   
+  } */
   #frame #sidepanel #profile .wrap #status-options {
     position: absolute;
     opacity: 0;
@@ -153,22 +187,17 @@ body {
     -webkit-transition: 0.3s all ease;
     transition: 0.3s all ease;
   }
-  @media screen and (max-width: 735px) {
-    #frame #sidepanel #profile .wrap #status-options {
-      width: 58px;
-      margin-top: 57px;
-    }
-  }
+  /* @media screen and (max-width: 735px) {
+   
+  } */
   #frame #sidepanel #profile .wrap #status-options.active {
     opacity: 1;
     visibility: visible;
     margin: 75px 0 0 0;
   }
-  @media screen and (max-width: 735px) {
-    #frame #sidepanel #profile .wrap #status-options.active {
-      margin-top: 62px;
-    }
-  }
+  /* @media screen and (max-width: 735px) {
+  
+  } */
   #frame #sidepanel #profile .wrap #status-options:before {
     content: '';
     position: absolute;
@@ -208,12 +237,9 @@ body {
     border-radius: 50%;
     margin: 5px 0 0 0;
   }
-  @media screen and (max-width: 735px) {
-    #frame #sidepanel #profile .wrap #status-options ul li span.status-circle {
-      width: 14px;
-      height: 14px;
-    }
-  }
+  /* @media screen and (max-width: 735px) {
+    
+  } */
   #frame #sidepanel #profile .wrap #status-options ul li span.status-circle:before {
     content: '';
     position: absolute;
@@ -657,9 +683,7 @@ body {
     color: #f5f5f5;
   }
   @media screen and (max-width: 735px) {
-    #frame .content .message-input .wrap button {
-      padding: 16px 0;
-    }
+   
   }
   #frame .content .message-input .wrap button:hover {
     background: #435f7a;
