@@ -34,8 +34,8 @@ class Login extends Component {
 
   render() {
     return (
-      <div>
-        <h2>Login</h2>
+      <div className="container">
+        <h2 style={{ textAlign: "center" }}>Login</h2>
         <Form onSubmit={this.handleSubmit}>
           <Form.Group>
             <Form.Label htmlFor="username">Username: </Form.Label>

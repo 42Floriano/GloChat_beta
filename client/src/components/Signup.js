@@ -34,8 +34,8 @@ class Signup extends Component {
 
   render() {
     return (
-      <div>
-        <h2>Signup</h2>
+      <div className="container">
+        <h2 style={{ textAlign: "center" }}>Signup</h2>
         <Form onSubmit={this.handleSubmit}>
           <Form.Group>
             <Form.Label htmlFor="username">Username: </Form.Label>
@@ -60,6 +60,14 @@ class Signup extends Component {
           {this.state.error && (
             <Alert variant="danger">{this.state.error}</Alert>
           )}
+          <Form.Group>
+            <Form.Label>Default Language</Form.Label>
+            <Form.Control as="select">
+              <option>Choose...</option>
+              <option>...</option>
+            </Form.Control>
+          </Form.Group>
+
           <Button type="submit">Sign up</Button>
         </Form>
       </div>
