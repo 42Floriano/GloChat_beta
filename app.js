@@ -6,6 +6,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const logger = require("morgan");
 const path = require("path");
+const favicon = require("serve-favicon");
 const session = require("express-session");
 const MongoStore = require("connect-mongo")(session);
 const flash = require("connect-flash");
@@ -35,6 +36,7 @@ app.use(logger("dev"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(favicon(path.join(__dirname, "public", "images", "favicon.ico")));
 
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -50,8 +52,8 @@ app.use(
 app.use(flash());
 require("./passport")(app);
 
-// const index = require("./routes/index");
-// app.use("/", index);
+const index = require("./routes/index");
+app.use("/", index);
 
 const authRoutes = require("./routes/auth");
 app.use("/auth", authRoutes);
