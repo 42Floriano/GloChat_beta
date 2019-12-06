@@ -61,6 +61,7 @@ router.delete("/logout", (req, res) => {
 
 router.get("/loggedin", (req, res) => {
   res.json(req.user);
+  console.log(req.session);
 });
 
 module.exports = router;

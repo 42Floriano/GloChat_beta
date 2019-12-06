@@ -114,37 +114,37 @@ server.listen(process.env.PORT, () => {
 
 io.on("connection", socket => {
   console.log("Client connected");
+  // socket.on("room", ({ userId }) => {
+  //   Room.create({ users: [userId], messages: [] })
+  //     .then(room => {
+  //       console.log("ROOM CREATED", room);
+  //       socket.emit("room", room);
+  //     })
+  //     .catch(err => console.log(err));
+  // });
 
-  socket.on("room", ({ userId }) => {
-    Room.create({ users: [userId], messages: [] })
-      .then(room => {
-        console.log("ROOM CREATED", room);
-        socket.emit("room", room);
-      })
-      .catch(err => console.log(err));
-  });
-
-  socket.on("message", async ({ message, userId, username }) => {
-    console.log("NEW MESSAGE:", message, userId, username);
+  socket.on("message", async ({ message, userId, username, socketId }) => {
     const result = await messageFromFrontEnd(message);
     const newMessage = result[0].translations;
     const newAndImprovedMessage = newMessage[0].text;
-    console.log("HALLO", newMessage);
-    console.log("Ach sooooo", newAndImprovedMessage);
     //  const realThing= `${message}
     //  ${newAndImprovedMessage}`
-    //  console.log(realThing)
+
+    Message.create({
+      text: message,
+      username: username
+    })
+      .then(msg => {
+        io.to(`${socketId}`).emit("message", msg);
+      })
+      .catch(err => console.log(err));
 
     Message.create({
       text: newAndImprovedMessage,
-      username: username,
-      user: userId
+      username: username
     })
       .then(msg => {
-        console.log("LOOOOOK HEEEEERE MATHAFACKAAAAAA", msg);
-        Message.find().then(messages => {
-          io.emit("message", messages);
-        });
+        socket.broadcast.emit("message", msg);
       })
       .catch(err => console.log(err));
   });

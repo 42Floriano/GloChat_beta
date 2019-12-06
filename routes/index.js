@@ -15,4 +15,8 @@ router.get("/messages", (req, res) => {
     .catch(err => console.log(err));
 });
 
+router.post("/room", (req, res) => {
+  console.log(req.body);
+});
+
 module.exports = router;
