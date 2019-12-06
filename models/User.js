@@ -8,7 +8,12 @@ const userSchema = new Schema(
     email: String,
     profilePic: String,
     defaultLanguage: String,
-    rooms: []
+    rooms: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Room"
+      }
+    ]
   },
   {
     timestamps: {

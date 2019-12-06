@@ -19,7 +19,7 @@ const NavBar = props => {
       <Nav className="mr-auto">
         {props.user ? (
           <React.Fragment>
-            <Link className="text-white ml-4" to="/chat">
+            <Link className="text-white ml-4" to="/">
               Chat
             </Link>
             <Link className="text-white ml-4" to="/" onClick={handleLogout}>

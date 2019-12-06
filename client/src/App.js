@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import "./App.css";
-import { Route, Redirect } from "react-router-dom";
+import { Route } from "react-router-dom";
 import NavBar from "./components/Navbar";
 import Home from "./components/Home";
 import Signup from "./components/Signup";
 import Login from "./components/Login";
-import Chat from "./components/Chat";
+// import Chat from "./components/Chat";
 import ChatTest from "./components/ChatTest";
 
 import "bootstrap/dist/css/bootstrap.min.css";

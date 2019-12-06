@@ -1,6 +1,8 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import io from "socket.io-client";
 import axios from "axios";
+import Message from "./Message";
 const endpoint = "http://localhost:5000";
 let socket;
 
@@ -8,7 +10,7 @@ class ChatTest extends Component {
   state = {
     message: "",
     user: this.props.user,
-    room: "1",
+    rooms: [],
     messages: []
   };
 
@@ -20,7 +22,6 @@ class ChatTest extends Component {
 
   handleSubmit = event => {
     event.preventDefault();
-    console.log(this.state);
     socket.emit("message", {
       message: this.state.message,
       userId: this.state.user._id,
@@ -31,13 +32,30 @@ class ChatTest extends Component {
     });
   };
 
+  handleRoomSubit = event => {
+    event.preventDefault();
+    socket.on("room", room => {
+      this.setState(
+        {
+          rooms: [...this.state.rooms, room]
+        },
+        () => {
+          console.log(this.state.rooms);
+        }
+      );
+    });
+
+    socket.emit("room", {
+      userId: this.state.user._id
+    });
+  };
+
   componentDidMount() {
-    console.log(this.props);
     socket = io(endpoint);
+
     axios
       .get("/messages")
       .then(messages => {
-        console.log(messages);
         this.setState({
           messages: messages.data
         });
@@ -61,26 +79,48 @@ class ChatTest extends Component {
   render() {
     return (
       <div className="container">
-        <div className="container">
-          {this.state.messages.map(msg => {
-            return (
-              <div>
-                {msg.username} said"{msg.text}"
-              </div>
-            );
-          })}
-        </div>
+        <div
+          className="row mt-4"
+          style={{
+            height: "550px"
+          }}
+        >
+          <div className="col-md-3 bg-primary">
+            <h2>Rooms</h2>
+            <form onSubmit={this.handleRoomSubit}>
+              <button className="btn btn-light" type="submit">
+                Generate a room
+              </button>
+            </form>
+            <div>
+              {this.state.rooms.map(room => {
+                return (
+                  <p>
+                    <Link className="text-white" to={`/room/${room._id}`}>
+                      {room._id}
+                    </Link>
+                  </p>
+                );
+              })}
+            </div>
+          </div>
+          <div className="col-md-8 bg-secondary">
+            <Message messages={this.state.messages} />
 
-        <form onSubmit={this.handleSubmit}>
-          <input
-            type="text"
-            name="message"
-            id="message"
-            value={this.state.message}
-            onChange={this.handleChange}
-          />
-          <button type="submit">Send</button>
-        </form>
+            <form id="chatInput" onSubmit={this.handleSubmit}>
+              <input
+                type="text"
+                name="message"
+                id="message"
+                value={this.state.message}
+                onChange={this.handleChange}
+              />
+              <button className="btn btn-light ml-4" type="submit">
+                Send
+              </button>
+            </form>
+          </div>
+        </div>
       </div>
     );
   }
