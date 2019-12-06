@@ -5,6 +5,7 @@ const messageSchema = new Schema({
   text: String,
   language: String,
   lastActiveAt: Date,
+  username: String,
   user: {
     type: Schema.Types.ObjectId,
     ref: "User"

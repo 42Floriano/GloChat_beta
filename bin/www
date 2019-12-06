@@ -1,38 +1,97 @@
 #!/usr/bin/env node
 
-const http = require('http');
+const http = require("http");
+let app = require("../app");
 
-let app = require('../app');
+const util = require("util");
+const request = require("request");
+const requestPromise = util.promisify(request);
+const uuidv4 = require("uuid/v4");
+const dotenv = require("dotenv");
+dotenv.config();
 
-// catch 404 and render a not-found.hbs template
-app.use((req, res, next) => {
-  res.status(404);
-  res.render('not-found');
-});
+// ---------- get info in .env -------------
+
+let key_var = "TRANSLATOR_TEXT_SUBSCRIPTION_KEY";
+if (!process.env[key_var]) {
+  throw new Error(
+    "Please set/export the following environment variable: " + key_var
+  );
+}
+let subscriptionKey = process.env[key_var];
+let endpoint_var = "TRANSLATOR_TEXT_ENDPOINT";
+if (!process.env[endpoint_var]) {
+  throw new Error(
+    "Please set/export the following environment variable: " + endpoint_var
+  );
+}
+let endpoint = process.env[endpoint_var];
+
+// ------- async function due API delay -------------
+// @param text to translate & arr of languages to translate to
+// wait promise and return it
+
+// async function message(text, arr) {
+async function messageFromFrontEnd(text) {
+  let message = {
+    method: "POST",
+    baseUrl: endpoint,
+    url: "translate",
+    qs: {
+      "api-version": "3.0",
+      to: ["en"]
+    },
+    headers: {
+      "Ocp-Apim-Subscription-Key": subscriptionKey,
+      "Content-type": "application/json",
+      "X-ClientTraceId": uuidv4().toString()
+    },
+    body: [
+      {
+        text: text
+      }
+    ],
+    json: true
+  };
+
+  const response = await requestPromise(message);
+  const result = response.body;
+  return result;
+}
+
+// const foo = async () =>{
+
+// let test = await message("Genau", ["pt", "en", "fr", "it"]);
+// console.log(test);
+
+// }
+
+// foo()
 
 app.use((err, req, res, next) => {
   // always log the error
-  console.error('ERROR', req.method, req.path, err);
+  console.error("ERROR", req.method, req.path, err);
 
   // only render if the error ocurred before sending the response
   if (!res.headersSent) {
     res.status(500);
-    res.render('error');
   }
 });
 
 let server = http.createServer(app);
 
-server.on('error', error => {
-  if (error.syscall !== 'listen') { throw error }
+server.on("error", error => {
+  if (error.syscall !== "listen") {
+    throw error;
+  }
 
   // handle specific listen errors with friendly messages
   switch (error.code) {
-    case 'EACCES':
+    case "EACCES":
       console.error(`Port ${process.env.PORT} requires elevated privileges`);
       process.exit(1);
       break;
-    case 'EADDRINUSE':
+    case "EADDRINUSE":
       console.error(`Port ${process.env.PORT} is already in use`);
       process.exit(1);
       break;
@@ -41,6 +100,65 @@ server.on('error', error => {
   }
 });
 
+// const socketio = require("socket.io");
+// const io = socketio(server);
+
+const io = require("socket.io").listen(server);
+const Message = require("../models/Message");
+
 server.listen(process.env.PORT, () => {
   console.log(`Listening on http://localhost:${process.env.PORT}`);
+});
+
+io.on("connection", socket => {
+  console.log("Client connected");
+
+  // socket.on("join", ({ name, room }, callback) => {
+
+  //   if (error) return callback(error);
+
+  //   socket.join(user.room);
+
+  //   socket.emit("message", {
+  //     user: "admin",
+  //     text: `${user.name}, welcome to room ${user.room}.`
+  //   });
+  //   socket.broadcast
+  //     .to(user.room)
+  //     .emit("message", { user: "admin", text: `${user.name} has joined!` });
+
+  //   io.to(user.room).emit("roomData", {
+  //     room: user.room,
+  //     users: getUsersInRoom(user.room)
+  //   });
+
+  //   callback();
+  // });
+
+  socket.on("message", async ({ message, userId, username }) => {
+    console.log("NEW MESSAGE:", message, userId, username);
+    const result = await messageFromFrontEnd(message);
+    const newMessage = result[0].translations;
+    const newAndImprovedMessage = newMessage[0].text;
+    console.log("HALLO", newMessage);
+    console.log("Ach sooooo", newAndImprovedMessage);
+    //  const realThing= `${message}
+    //  ${newAndImprovedMessage}`
+    //  console.log(realThing)
+
+    Message.create({
+      text: newAndImprovedMessage,
+      username: username,
+      user: userId
+    })
+      .then(msg => {
+        console.log("LOOOOOK HEEEEERE MATHAFACKAAAAAA", msg);
+        Message.find().then(messages => {
+          socket.broadcast.emit("message", messages);
+        });
+      })
+      .catch(err => console.log(err));
+  });
+
+  socket.on("disconnect", () => console.log("Client disconnected"));
 });
