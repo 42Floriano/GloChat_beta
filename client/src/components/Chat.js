@@ -6,7 +6,7 @@ class Chat extends Component {
 
   render() {
     return (
-      <div>
+      <div id="chat-container">
         <div id="frame">
           <div id="sidepanel">
             <div id="profile">

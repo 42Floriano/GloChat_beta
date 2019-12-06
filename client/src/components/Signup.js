@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Redirect } from "react-router-dom";
 import { Alert, Form, Button } from "react-bootstrap";
 import axios from "axios";
 
@@ -6,6 +7,7 @@ class Signup extends Component {
   state = {
     username: "",
     password: "",
+    email: "",
     error: ""
   };
 
@@ -21,22 +23,38 @@ class Signup extends Component {
     axios
       .post("/auth/signup", {
         username: this.state.username,
-        password: this.state.password
+        password: this.state.password,
+        email: this.state.email
       })
       .then(response => {
         console.log(response.data);
-        return response.data;
+        this.props.setUser(response.data);
+        this.props.history.push("/");
       })
       .catch(err => {
-        return err.response.data;
+        if (err.response.data.message) {
+          this.setState({
+            error: err.response.data.message
+          });
+        }
       });
   };
 
   render() {
     return (
-      <div className="container">
-        <h2 style={{ textAlign: "center" }}>Signup</h2>
+      <div className="container border border-primary p-4 mt-4">
+        <h2 className="text-center">Signup</h2>
         <Form onSubmit={this.handleSubmit}>
+          <Form.Group>
+            <Form.Label htmlFor="email">Email id: </Form.Label>
+            <Form.Control
+              type="text"
+              name="email"
+              id="email"
+              value={this.state.email}
+              onChange={this.handleChange}
+            />
+          </Form.Group>
           <Form.Group>
             <Form.Label htmlFor="username">Username: </Form.Label>
             <Form.Control

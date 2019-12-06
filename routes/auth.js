@@ -1,6 +1,6 @@
 const express = require("express");
 const passport = require("passport");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const router = express.Router();
 const User = require("../models/User");
 
@@ -38,7 +38,15 @@ router.post("/signup", (req, res) => {
       res.status(500).json(err);
     });
 });
+router.get("/google", passport.authenticate("google", { scope: ["profile"] }));
 
+router.get(
+  "/google/callback",
+  passport.authenticate("google", {
+    failureRedirect: "/auth/login",
+    successRedirect: "/"
+  })
+);
 router.post("/login", (req, res, next) => {
   passport.authenticate("local", (err, user) => {
     if (err) {
@@ -61,6 +69,29 @@ router.delete("/logout", (req, res) => {
 
 router.get("/loggedin", (req, res) => {
   res.json(req.user);
+});
+
+router.post("/changeDetails", (req, res) => {
+  const { password } = req.body;
+
+  bcrypt
+    .genSalt()
+    .then(salt => {
+      return bcrypt.hash(password, salt);
+    })
+    .then(hash => {
+      return User.findByIdAndUpdate(
+        { _id: req.user._id },
+        { password: hash },
+        { new: true }
+      );
+    })
+    .then(User => {
+      return res.json(User);
+    })
+    .catch(err => {
+      return res.status(500).json(err);
+    });
 });
 
 module.exports = router;

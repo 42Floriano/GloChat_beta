@@ -3,7 +3,6 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: #27ae60;
   font-family: "proxima-nova", "Source Sans Pro", sans-serif;
   font-size: 1em;
   letter-spacing: 0.1px;
@@ -632,7 +631,7 @@
 #frame .content .messages ul li {
   display: inline-block;
   clear: both;
-  float: left;
+
   margin: 15px 15px 5px 15px;
   width: calc(100% - 25px);
   font-size: 0.9em;

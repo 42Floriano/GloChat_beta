@@ -1,38 +1,33 @@
 #!/usr/bin/env node
 
-const http = require('http');
-
-let app = require('../app');
-
-// catch 404 and render a not-found.hbs template
-app.use((req, res, next) => {
-  res.status(404);
-  res.render('not-found');
-});
+const http = require("http");
+let app = require("../app");
+//const socketio = require("socket.io");
 
 app.use((err, req, res, next) => {
   // always log the error
-  console.error('ERROR', req.method, req.path, err);
+  console.error("ERROR", req.method, req.path, err);
 
   // only render if the error ocurred before sending the response
   if (!res.headersSent) {
     res.status(500);
-    res.render('error');
   }
 });
 
 let server = http.createServer(app);
 
-server.on('error', error => {
-  if (error.syscall !== 'listen') { throw error }
+server.on("error", error => {
+  if (error.syscall !== "listen") {
+    throw error;
+  }
 
   // handle specific listen errors with friendly messages
   switch (error.code) {
-    case 'EACCES':
+    case "EACCES":
       console.error(`Port ${process.env.PORT} requires elevated privileges`);
       process.exit(1);
       break;
-    case 'EADDRINUSE':
+    case "EADDRINUSE":
       console.error(`Port ${process.env.PORT} is already in use`);
       process.exit(1);
       break;
@@ -41,6 +36,51 @@ server.on('error', error => {
   }
 });
 
+// const socketio = require("socket.io");
+// const io = socketio(server);
+
+const io = require("socket.io").listen(server);
+const Message = require("../models/Message");
+
 server.listen(process.env.PORT, () => {
   console.log(`Listening on http://localhost:${process.env.PORT}`);
+});
+
+io.on("connection", socket => {
+  console.log("Client connected");
+
+  // socket.on("join", ({ name, room }, callback) => {
+
+  //   if (error) return callback(error);
+
+  //   socket.join(user.room);
+
+  //   socket.emit("message", {
+  //     user: "admin",
+  //     text: `${user.name}, welcome to room ${user.room}.`
+  //   });
+  //   socket.broadcast
+  //     .to(user.room)
+  //     .emit("message", { user: "admin", text: `${user.name} has joined!` });
+
+  //   io.to(user.room).emit("roomData", {
+  //     room: user.room,
+  //     users: getUsersInRoom(user.room)
+  //   });
+
+  //   callback();
+  // });
+
+  socket.on("message", ({ message, userId, username }) => {
+    console.log("NEW MESSAGE:", message, userId, username);
+    Message.create({ text: message, username: username, user: userId })
+      .then(msg => {
+        Message.find().then(messages => {
+          socket.broadcast.emit("message", messages);
+        });
+      })
+      .catch(err => console.log(err));
+  });
+
+  socket.on("disconnect", () => console.log("Client disconnected"));
 });
