@@ -4,7 +4,11 @@ import io from "socket.io-client";
 import axios from "axios";
 import Message from "./Message";
 const endpoint = "http://localhost:5000";
+
+
 let socket;
+
+
 
 class ChatTest extends Component {
   state = {
@@ -21,6 +25,7 @@ class ChatTest extends Component {
   };
 
   handleSubmit = event => {
+    
     event.preventDefault();
     socket.emit("message", {
       message: this.state.message,

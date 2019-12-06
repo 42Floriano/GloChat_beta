@@ -2,7 +2,71 @@
 
 const http = require("http");
 let app = require("../app");
-//const socketio = require("socket.io");
+
+const util = require("util");
+const request = require("request");
+const requestPromise = util.promisify(request);
+const uuidv4 = require("uuid/v4");
+const dotenv = require("dotenv");
+dotenv.config();
+
+// ---------- get info in .env -------------
+
+let key_var = "TRANSLATOR_TEXT_SUBSCRIPTION_KEY";
+if (!process.env[key_var]) {
+  throw new Error(
+    "Please set/export the following environment variable: " + key_var
+  );
+}
+let subscriptionKey = process.env[key_var];
+let endpoint_var = "TRANSLATOR_TEXT_ENDPOINT";
+if (!process.env[endpoint_var]) {
+  throw new Error(
+    "Please set/export the following environment variable: " + endpoint_var
+  );
+}
+let endpoint = process.env[endpoint_var];
+
+// ------- async function due API delay -------------
+// @param text to translate & arr of languages to translate to
+// wait promise and return it
+
+// async function message(text, arr) {
+async function messageFromFrontEnd(text) {
+  let message = {
+    method: "POST",
+    baseUrl: endpoint,
+    url: "translate",
+    qs: {
+      "api-version": "3.0",
+      to: ["en"]
+    },
+    headers: {
+      "Ocp-Apim-Subscription-Key": subscriptionKey,
+      "Content-type": "application/json",
+      "X-ClientTraceId": uuidv4().toString()
+    },
+    body: [
+      {
+        text: text
+      }
+    ],
+    json: true
+  };
+
+  const response = await requestPromise(message);
+  const result = response.body;
+  return result;
+}
+
+// const foo = async () =>{
+
+// let test = await message("Genau", ["pt", "en", "fr", "it"]);
+// console.log(test);
+
+// }
+
+// foo()
 
 app.use((err, req, res, next) => {
   // always log the error
@@ -52,18 +116,32 @@ io.on("connection", socket => {
   console.log("Client connected");
 
   socket.on("room", ({ userId }) => {
-
     Room.create({ users: [userId], messages: [] })
       .then(room => {
-        console.log("ROOM CREATED", room)
+        console.log("ROOM CREATED", room);
         socket.emit("room", room);
       })
       .catch(err => console.log(err));
   });
 
-  socket.on("message", ({ message, userId, username }) => {
-    Message.create({ text: message, username: username, user: userId })
+  socket.on("message", async ({ message, userId, username }) => {
+    console.log("NEW MESSAGE:", message, userId, username);
+    const result = await messageFromFrontEnd(message);
+    const newMessage = result[0].translations;
+    const newAndImprovedMessage = newMessage[0].text;
+    console.log("HALLO", newMessage);
+    console.log("Ach sooooo", newAndImprovedMessage);
+    //  const realThing= `${message}
+    //  ${newAndImprovedMessage}`
+    //  console.log(realThing)
+
+    Message.create({
+      text: newAndImprovedMessage,
+      username: username,
+      user: userId
+    })
       .then(msg => {
+        console.log("LOOOOOK HEEEEERE MATHAFACKAAAAAA", msg);
         Message.find().then(messages => {
           io.emit("message", messages);
         });
