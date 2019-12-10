@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Button, Col } from "react-bootstrap";
+
 class Users extends Component {
   getCountyFlag = countryCode =>
     `https://www.countryflags.io/${countryCode}/flat/64.png`;

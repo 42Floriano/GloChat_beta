@@ -80,7 +80,6 @@ class Signup extends Component {
         password: this.state.password,
         email: this.state.email,
         defaultLanguage: this.state.defaultLanguage,
-        // listeLanguages: this.state.listeLanguages,
         profilePic: this.state.profilePic,
         bio: this.state.bio
       })

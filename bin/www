@@ -32,12 +32,10 @@ let endpoint = process.env[endpoint_var];
 // wait promise and return it
 
 // async function message(text, arr) {
-let 
-
 
 async function messageFromFrontEnd(text, lgTrans) {
-  lgTransCode = lgTrans.substr(0,lgTrans.indexOf(' '));
-  console.log(lgTransCode)
+  lgTransCode = lgTrans.substr(0, lgTrans.indexOf(" "));
+  console.log(lgTransCode);
   let message = {
     method: "POST",
     baseUrl: endpoint,
@@ -130,7 +128,6 @@ const emitUsers = () => {
 
 io.on("connection", socket => {
   console.log("Client connected", socket.id);
-  console.log(io.sockets.clients());
 
   socket.on("new_user", user => {
     //console.log("New user:", user);
@@ -169,81 +166,172 @@ io.on("connection", socket => {
       .catch(err => console.log(err));
   });
 
+  //   socket.on(
+  //     "message",
+  //     async ({
+  //       message,
+  //       userId,
+  //       username,
+  //       roomId,
+  //       socketId,
+  //       defaultLanguage
+  //     }) => {
+  //       const result = await messageFromFrontEnd(message, defaultLanguage);
+  //       const newMessage = result[0].translations;
+  //       const newAndImprovedMessage = newMessage[0].text;
+
+  //       console.log(newAndImprovedMessage);
+
+  //       Message.create({ text: message, user: userId, username: username })
+  //         .then(message => {
+  //           io.to(`${socketId}`).emit("message", message);
+  //           Room.findOneAndUpdate(
+  //             { _id: roomId },
+  //             { $push: { messages: message._id } }
+  //           ).then(room => {
+  //             Message.create({
+  //               text: newAndImprovedMessage,
+  //               username: username,
+  //               user: userId
+  //             }).then(msg => {
+  //               socket.to(roomId).broadcast.emit("message", msg);
+  //               Room.findOneAndUpdate(
+  //                 { _id: roomId },
+  //                 { $push: { messages: msg._id } }
+  //               ).then(room => {});
+  //             });
+  //           });
+  //         })
+  //         .catch(err => console.log(err));
+  //     }
+  //   );
+
+  //   socket.on("disconnect", function() {
+  //     emitUsers();
+  //     console.log("User disconnected");
+  //   });
+  // });
+
   socket.on(
     "message",
-    async ({ message, userId, username, roomId, socketId, defaultLanguage }) => {
-      const result = await messageFromFrontEnd(message, defaultLanguage);
-      const newMessage = result[0].translations;
-      const newAndImprovedMessage = newMessage[0].text;
+    ({ message, userId, username, roomId, socketId, defaultLanguage }) => {
+      console.log("USER ID, MESSAGE SENT    ", userId, typeof userId);
 
-      console.log(newAndImprovedMessage)
+      // find the room
+      Room.findOne({ _id: roomId })
+        .populate("users")
+        .then(response => {
+          // find the user in the room (second)
+          // find his lang
+          // console.log("USER response", response.users);
+          const [person] = response.users.filter(el => el._id != userId);
+          // const array = response.users.map(el => {
+          //   newObj = {};
+          //   newObj.username = el.username;
+          //   newObj.id = el._id;
+          //   return newObj;
+          // });
+          // console.log(array[1].id == userId);
+          console.log(person);
 
-      Message.create({ text: message, user: userId, username: username })
-        .then(message => {
+          // console.log("userId", userId);
+          // const stupidTest = userId.split("").join("");
+          // const check =
+          //   response.users[0] === userId && response.users[1] === userId;
+          // console.log(typeof response.users[0]);
+          // const secUser = response.users.find(id => id !== userId);
+          // console.log("SEC USER???", secUser);
+          // console.log("USERID", userId);
+          // console.log("SECUSERID", secUser);
+          User.findById(person._id).then(async data => {
+            console.log("Looook me in the yes, I said the eyes    ",data.defaultLanguage);
+            // console.log("DATA FROM SEC USER", data.defaultLanguage);
+            // console.log("DATA FROM SEC USER", data);
 
-          io.to(`${socketId}`).emit("message", message);
-          Room.findOneAndUpdate(
-            { _id: roomId },
-            { $push: { messages: message._id } }
-          ).then(room => {
-            Message.create({
-              text: newAndImprovedMessage,
-              username: username,
-              user: userId
-            }).then(msg => {
-              socket.to(roomId).broadcast.emit("message", msg);
-              Room.findOneAndUpdate(
-                { _id: roomId },
-                { $push: { messages: msg._id } }
-              ).then(room => {});
-            });
+            const lang = data.defaultLanguage;
+            const result = await messageFromFrontEnd(
+              message,
+              lang
+            );
+            const newMessage = result[0].translations;
+            const newAndImprovedMessage = newMessage[0].text;
+
+            // console.log("LOOK HERE FLORIANOOOOO", newAndImprovedMessage);
+
+            Message.create({ text: message, user: userId, username: username })
+              .then(message => {
+                io.to(`${socketId}`).emit("message", message);
+                Room.findOneAndUpdate(
+                  { _id: roomId },
+                  { $push: { messages: message._id } }
+                ).then(room => {
+                  Message.create({
+                    text: newAndImprovedMessage,
+                    username: username,
+                    user: userId
+                  }).then(msg => {
+                    socket.to(roomId).broadcast.emit("message", msg);
+                    Room.findOneAndUpdate(
+                      { _id: roomId },
+                      { $push: { messages: msg._id } }
+                    ).then(room => {});
+                  });
+                });
+              })
+              .catch(err => console.log(err));
           });
-        })
-        .catch(err => console.log(err));
+        });
     }
   );
-
   socket.on("disconnect", function() {
     emitUsers();
     console.log("User disconnected");
   });
 });
 
+//         });
+//       });
+
+// });
+
 // io.sockets.connected[user2.connection.socketId].join(room.name);
 // console.log(io.sockets.adapter.rooms[room.name]);
 // io.to(room.name).emit("privateRoom", room);
 
-// socket.on("message", async ({ message, userId, username, socketId }) => {
-//   const result = await messageFromFrontEnd(message);
-//   const newMessage = result[0].translations;
-//   const newAndImprovedMessage = newMessage[0].text;
-//   //  const realThing= `${message}
-//   //  ${newAndImprovedMessage}`
+///////////
 
-//   Message.create({
-//     text: message,
-//     username: username
-//   })
-//     .then(msg => {
-//       io.to(`${socketId}`).emit("message", msg);
-//     })
-//     .catch(err => console.log(err));
+//   socket.on("message", async ({ message, userId, username, socketId }) => {
+//     const result = await messageFromFrontEnd(message);
+//     const newMessage = result[0].translations;
+//     const newAndImprovedMessage = newMessage[0].text;
+//     //  const realThing= `${message}
+//     //  ${newAndImprovedMessage}`
 
-//   Message.create({
-//     text: newAndImprovedMessage,
-//     username: username
-//   })
-//     .then(msg => {
-//       socket.broadcast.emit("message", msg);
+//     Message.create({
+//       text: message,
+//       username: username
 //     })
-//     .catch(err => console.log(err));
-// });
+//       .then(msg => {
+//         io.to(`${socketId}`).emit("message", msg);
+//       })
+//       .catch(err => console.log(err));
 
-// socket.on("room", ({ userId }) => {
-//   Room.create({ users: [userId], messages: [] })
-//     .then(room => {
-//       console.log("ROOM CREATED", room);
-//       socket.emit("room", room);
+//     Message.create({
+//       text: newAndImprovedMessage,
+//       username: username
 //     })
-//     .catch(err => console.log(err));
+//       .then(msg => {
+//         socket.broadcast.emit("message", msg);
+//       })
+//       .catch(err => console.log(err));
+//   });
+
+//   socket.on("room", ({ userId }) => {
+//     Room.create({ users: [userId], messages: [] })
+//       .then(room => {
+//         console.log("ROOM CREATED", room);
+//         socket.emit("room", room);
+//       })
+//       .catch(err => console.log(err));
+//   });
 // });

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Container, Row, Col, Button } from "react-bootstrap";
+import { Container, Row, Col, Button, Form } from "react-bootstrap";
 import io from "socket.io-client";
 import axios from "axios";
 import Users from "./Users";
@@ -19,10 +19,30 @@ class Chat extends Component {
     roomId: "",
     rooms: [],
     search: "",
-    socketId: socket.id
+    socketId: socket.id,
+    listeLanguages: {},
+    defaultLanguage: this.props.user.defaultLanguage
   };
 
   componentDidMount = () => {
+    axios
+      .get(
+        "https://api.cognitive.microsofttranslator.com/languages?api-version=3.0"
+      )
+      .then(listeCountry => {
+        this.setState({
+          listeLanguages: listeCountry.data.dictionary
+        });
+        //  console.log(this.state.listeLanguages);
+
+        //   const arr = Object.entries(this.state.listeLanguages);
+        //   arr.map(item => {
+        //    console.log(item[0]);
+        //      console.log(item[1].name);
+        //   });
+      })
+      .catch(err => console.log(err));
+
     axios
       .get("http://geoplugin.net/json.gp")
       .then(resp => {
@@ -67,6 +87,7 @@ class Chat extends Component {
     });
   };
 
+ 
   searchUsers = event => {
     event.preventDefault();
     axios
@@ -160,6 +181,7 @@ class Chat extends Component {
                   Search
                 </button>
               </form>
+
               {this.state.users.map(user => {
                 if (
                   //this.state.onlineUsers &&
@@ -198,7 +220,7 @@ class Chat extends Component {
             {this.state.messages.map(msg => {
               return <Message msg={msg} key={msg._id} />;
             })}
-            <form onSubmit={this.sendMessage}>
+            <form onSubmit={(this.sendMessage)}>
               <input
                 type="text"
                 name="message"
@@ -206,6 +228,31 @@ class Chat extends Component {
                 value={this.state.message}
                 onChange={this.handleChange}
               />
+
+              <Form.Group controlId="exampleForm.ControlSelect1">
+                <Form.Label style={{ fontWeight: "500" }}>
+                  Select your language
+                </Form.Label>
+
+                <Form.Control
+                  as="select"
+                  value={this.state.defaultLanguage}
+                  onChange={this.handleChange}
+                  name="defaultLanguage"
+                >
+            
+
+                  {Object.entries(this.state.listeLanguages).map(country => {
+                    return (
+                      <option key={country[0]}>
+                        {" "}
+                        {country[0]} - {country[1].name}{" "}
+                      </option>
+                    );
+                  })}
+                </Form.Control>
+              </Form.Group>
+
               <button className="btn btn-light ml-4" type="submit">
                 Send
               </button>
