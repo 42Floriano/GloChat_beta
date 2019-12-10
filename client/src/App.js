@@ -51,6 +51,13 @@ class App extends Component {
             <Signup user={this.state.user} setUser={this.setUser} {...props} />
           )}
         />
+        {/* <Route
+          exact
+          path="/auth/google"
+          render={props => (
+            <Signup user={this.state.user} setUser={this.setUser} {...props} />
+          )}
+        /> */}
         <Route
           exact
           path="/settings"

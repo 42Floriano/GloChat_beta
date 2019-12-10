@@ -15,8 +15,10 @@ class Settings extends Component {
     password: "",
     confirmPassword: "",
     error: "",
+    profilePic: "",
     bio: "",
-    completed: false
+    completed: false,
+    upload: false
   };
 
   validateForm() {
@@ -32,6 +34,25 @@ class Settings extends Component {
     });
   };
 
+  imageUpload = event => {
+    console.log("the file to be added is", event.target.files[0]);
+
+    const files = event.target.files[0];
+    const uploadData = new FormData();
+    // imageUrl => this name has to be the same as in the model since we pass
+    // req.body to .create() method when creating a new thing in '/api/things/create' POST route
+    uploadData.append("profilePic", files);
+    this.setState({ upload: true }, () => {
+      axios.post("/api/cloudinary", uploadData).then(response => {
+        //   const urlPath = response.data.secure_url;
+        this.setState({ profilePic: response.data.secure_url }, () => {
+          console.log(this.state);
+          this.setState({ upload: false });
+        });
+      });
+    });
+  };
+
   handleChangeClick = async event => {
     event.preventDefault();
     console.log(this.validateForm());
@@ -39,7 +60,8 @@ class Settings extends Component {
       axios
         .post("/auth/changeDetails", {
           password: this.state.password,
-          bio: this.state.bio
+          bio: this.state.bio,
+          profilePic: this.state.profilePic
         })
         .then(response => {
           console.log(response.data);
@@ -63,6 +85,18 @@ class Settings extends Component {
       });
     }
   };
+  componentDidMount = () => {
+    console.log("hello");
+    axios.get("/api/test").then(user => {
+      console.log(user.data);
+      this.setState(
+        {
+          profilePic: user.data.profilePic
+        },
+        () => console.log(this.state.profilePic)
+      );
+    });
+  };
 
   render() {
     return (
@@ -85,7 +119,19 @@ class Settings extends Component {
               type="password"
               onChange={this.handleChange}
               value={this.state.confirmPassword}
+              pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,15}"
             />
+            <b
+              style={{
+                color: "#1D2951",
+                textAlign: "center",
+                fontSize: "0.5em "
+              }}
+            >
+              Your password should contain at least one uppercase letter, one
+              downcase letter, one number and be at least 8 to 15 characters
+              long and special characters.
+            </b>
           </FormGroup>
           <Form.Group>
             <Form.Label htmlFor="text">Add a Bio: </Form.Label>
@@ -97,6 +143,37 @@ class Settings extends Component {
               onChange={this.handleChange}
             />
           </Form.Group>
+          <Form.Group>
+            <Form.Label htmlFor="text" style={{ fontWeight: "500" }}>
+              Upload an Image:{" "}
+            </Form.Label>
+            <Form.Control
+              id="image"
+              type="file"
+              name="imagePath"
+              placeholder="User image"
+              onChange={this.imageUpload}
+            />
+          </Form.Group>
+          {this.state.upload && (
+            <div>
+              Please wait for a second while we make your image look amazing
+            </div>
+          )}
+          <img
+            src={this.state.profilePic}
+            style={{
+              border: "2px solid black",
+              margin: "30px  20px",
+              display: "flex",
+              float: "right",
+              width: "10%",
+              position: "fixed",
+              bottom: "65%",
+              left: "85%"
+            }}
+            alt="profile"
+          />
           <Button
             block
             type="submit"

@@ -62,7 +62,7 @@ class Signup extends Component {
     uploadData.append("profilePic", files);
     this.setState({ upload: true }, () => {
       axios.post("/api/cloudinary", uploadData).then(response => {
-        const urlPath = response.data.secure_url;
+        //   const urlPath = response.data.secure_url;
         this.setState({ profilePic: response.data.secure_url }, () => {
           console.log(this.state);
           this.setState({ upload: false });
@@ -100,7 +100,7 @@ class Signup extends Component {
 
   render() {
     return (
-      <div className="container border border-secondary p-4 mt-4 mr-auto ml-auto col-md-4 ">
+      <div className="container border border-secondary p-4 mt-4 mr-auto ml-auto col-md-4  ">
         <h2 className="text-center" style={{ fontWeight: "bold" }}>
           SignUp
         </h2>
@@ -148,7 +148,7 @@ class Signup extends Component {
               style={{
                 color: "#1D2951",
                 textAlign: "center",
-                fontSize: "5px "
+                fontSize: "0.5em "
               }}
             >
               Your password should contain at least one uppercase letter, one
