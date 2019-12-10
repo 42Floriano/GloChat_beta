@@ -18,7 +18,8 @@ class Chat extends Component {
     message: "",
     roomId: "",
     rooms: [],
-    search: ""
+    search: "",
+    socketId: socket.id
   };
 
   componentDidMount = () => {
@@ -37,7 +38,6 @@ class Chat extends Component {
                 ...this.props.user,
                 isOnline: true,
                 connection: {
-                  socketId: socket.id,
                   countryCode: geoplugin_countryCode,
                   city: geoplugin_city
                 }
