@@ -14,7 +14,6 @@ router.get("/users/:search", (req, res) => {
 });
 
 router.get("/rooms", (req, res) => {
-  console.log(req.user);
   Room.find({ _id: { $in: req.user.rooms } })
     .populate("users")
     .then(rooms => {

@@ -7,7 +7,6 @@ const uploadCloud = require("../config/cloudinary");
 
 router.post("/signup", uploadCloud.single("imagePath"), (req, res, next) => {
   const { username, password, profilePic, bio, email } = req.body;
-  console.log(profilePic);
   const defaultUserImage =
     "https://res.cloudinary.com/djulje0nb/image/upload/v1575889852/glochat/dummy-profile-pic1_jltxbg.png";
 

@@ -19,7 +19,8 @@ class Chat extends Component {
     roomId: "",
     rooms: [],
     search: "",
-    socketId: socket.id
+    socketId: socket.id,
+    user2: {}
   };
 
   componentDidMount = () => {
@@ -27,27 +28,23 @@ class Chat extends Component {
       .get("http://geoplugin.net/json.gp")
       .then(resp => {
         const { geoplugin_countryCode, geoplugin_city } = resp.data;
-
-        axios.get("/rooms").then(res => {
-          socket.emit("new_user", this.state.user);
-          socket.on("users", users => {
-            this.setState({
-              onlineUsers: users,
-              rooms: res.data,
-              user: {
-                ...this.props.user,
-                isOnline: true,
-                connection: {
-                  countryCode: geoplugin_countryCode,
-                  city: geoplugin_city
-                }
+        this.getRooms();
+        socket.emit("new_user", this.state.user);
+        socket.on("users", users => {
+          this.setState({
+            onlineUsers: users,
+            user: {
+              ...this.props.user,
+              isOnline: true,
+              connection: {
+                countryCode: geoplugin_countryCode,
+                city: geoplugin_city
               }
-            });
+            }
           });
         });
 
         socket.on("message", message => {
-          console.log(message);
           //this.getMessages(this.state.roomId);
           this.setState({
             messages: [...this.state.messages, message]
@@ -86,25 +83,27 @@ class Chat extends Component {
       user: this.state.user,
       room: room._id
     });
-    this.setState({
-      roomId: room._id
-    });
+    this.setState(
+      {
+        roomId: room._id
+      },
+      this.getMessages(room)
+    );
   };
 
   joinPrivate = user => {
-    console.log(user);
     socket.emit("joinPrivate", { user1: this.state.user, user2: user });
     socket.on("welcome", message => {
       console.log(message);
     });
     socket.on("room", room => {
-      console.log(room);
       this.setState(
         {
           roomId: room[0]._id
         },
-        () => this.getMessages(room[0])
+        () => this.joinRoom(room[0])
       );
+      this.getRooms();
     });
   };
 
@@ -123,16 +122,22 @@ class Chat extends Component {
   };
 
   getMessages = room => {
-    console.log("GETMESSAGES", room);
     axios
       .get(`/messages/${room._id}`)
       .then(res => {
         this.setState({
           messages: res.data
         });
-        this.joinRoom(room);
       })
       .catch(err => console.log(err));
+  };
+
+  getRooms = () => {
+    axios.get("/rooms").then(res => {
+      this.setState({
+        rooms: res.data
+      });
+    });
   };
 
   render() {
@@ -141,9 +146,27 @@ class Chat extends Component {
         <Row
           className="mt-4"
           style={{
-            height: "500px"
+            height: "550px"
           }}
         >
+          <Users rooms={this.state.rooms} joinRoom={this.joinRoom} />
+
+          <Col xs={6} id="chat" className="bg-primary">
+            {this.state.messages.map(msg => {
+              return <Message msg={msg} key={msg._id} user={this.state.user} />;
+            })}
+            <Container>
+              <form onSubmit={this.sendMessage}>
+                <input
+                  type="text"
+                  name="message"
+                  id="message"
+                  value={this.state.message}
+                  onChange={this.handleChange}
+                />
+              </form>
+            </Container>
+          </Col>
           <Col xs={3} className="bg-light">
             <Container>
               <h2>Users</h2>
@@ -161,7 +184,6 @@ class Chat extends Component {
               </form>
               {this.state.users.map(user => {
                 if (
-                  //this.state.onlineUsers &&
                   this.state.onlineUsers
                     .map(x => {
                       return x && x._id;
@@ -193,24 +215,6 @@ class Chat extends Component {
               })}
             </Container>
           </Col>
-          <Col xs={6} id="chat" className="bg-primary">
-            {this.state.messages.map(msg => {
-              return <Message msg={msg} key={msg._id} />;
-            })}
-            <form onSubmit={this.sendMessage}>
-              <input
-                type="text"
-                name="message"
-                id="message"
-                value={this.state.message}
-                onChange={this.handleChange}
-              />
-              <button className="btn btn-light ml-4" type="submit">
-                Send
-              </button>
-            </form>
-          </Col>
-          <Users rooms={this.state.rooms} getMessages={this.getMessages} />
         </Row>
       </Container>
     );

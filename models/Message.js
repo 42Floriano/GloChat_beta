@@ -4,15 +4,7 @@ const Schema = mongoose.Schema;
 const messageSchema = new Schema(
   {
     text: String,
-    translations: [
-      {
-        text: String,
-        user: {
-          type: Schema.Types.ObjectId,
-          ref: "User"
-        }
-      }
-    ],
+    translation: String,
     username: String,
     user: {
       type: Schema.Types.ObjectId,
