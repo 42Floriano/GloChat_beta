@@ -10,29 +10,77 @@ const NavBar = props => {
   };
 
   return (
-    <Navbar className="nav justify-content-end bg-primary d-flex ">
+    <Navbar
+      className="nav justify-content-end  d-flex "
+      style={{
+        backgroundColor: "#0E4D92"
+      }}
+    >
       <Navbar.Brand>
-        <Link className="text-white" to="/">
+        <Link
+          className="text-white"
+          style={{ textDecoration: "none", fontSize: "25px" }}
+          to="/"
+        >
           GloChat
         </Link>
       </Navbar.Brand>
       <Nav className="mr-auto">
         {props.user ? (
           <React.Fragment>
-            <Link className="text-white ml-4" to="/">
+            <Link
+              className="text-white ml-4"
+              style={{ textDecoration: "none", fontSize: "20px" }}
+              to="/"
+            >
               Chat
             </Link>
-            <Link className="text-white ml-4" to="/" onClick={handleLogout}>
+            <Link
+              className="text-white ml-4"
+              style={{ textDecoration: "none", fontSize: "20px" }}
+              to="/"
+              onClick={handleLogout}
+            >
               Logout
+            </Link>
+            <Link
+              className="text-white ml-4"
+              style={{ textDecoration: "none", fontSize: "20px" }}
+              to="/Settings"
+            >
+              Settings
+            </Link>
+            <Link
+              className="text-white ml-4"
+              style={{ textDecoration: "none", fontSize: "20px" }}
+              to="/About"
+            >
+              About
             </Link>
           </React.Fragment>
         ) : (
           <React.Fragment>
-            <Link className="text-white ml-4" to="/signup">
+            <Link
+              className="text-white ml-4"
+              style={{ textDecoration: "none", fontSize: "20px" }}
+              to="/signup"
+            >
               Signup
             </Link>
-            <Link className="text-white ml-4" to="/login">
+            <Link
+              className="text-white ml-4"
+              style={{ textDecoration: "none", fontSize: "20px" }}
+              to="/login"
+            >
               Login
+            </Link>
+
+            <Link
+              className="text-white ml-4"
+              style={{ textDecoration: "none", fontSize: "20px" }}
+              to="/auth/google"
+            >
+              Sign in with Google
             </Link>
           </React.Fragment>
         )}

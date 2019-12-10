@@ -1,42 +1,33 @@
 const express = require("express");
 const router = express.Router();
-const Message = require("../models/Message");
-const Room = require("../models/Room");
 const User = require("../models/User");
+const Room = require("../models/Room");
 
-// /* GET home page */
 // router.get("/", (req, res, next) => {
 //   res.send({});
 // });
 
-router.get("/messages", (req, res) => {
-  Message.find()
-    .then(messages => {
-      res.json(messages);
-    })
+router.get("/users/:search", (req, res) => {
+  User.find({ $text: { $search: req.params.search } })
+    .then(users => res.json(users))
     .catch(err => console.log(err));
 });
 
-router.get("/getRooms", (req, res) => {
-  Room.find()
+router.get("/rooms", (req, res) => {
+  console.log(req.user);
+  Room.find({ _id: { $in: req.user.rooms } })
+    .populate("users")
     .then(rooms => {
-      const filteredRooms = rooms.filter(room =>
-        room.users.includes(req.user._id)
-      );
-      res.json(filteredRooms);
+      res.json(rooms);
     })
     .catch(err => console.log(err));
 });
 
-router.post("/room", (req, res) => {
-  const { name, userId } = req.body;
-  Room.create({ name: name, users: [userId], messages: [] })
+router.get("/messages/:roomid", (req, res) => {
+  Room.findOne({ _id: req.params.roomid })
+    .populate("messages")
     .then(room => {
-      res.json(room);
-      User.findOneAndUpdate(
-        { _id: userId },
-        { $push: { rooms: room._id } }
-      ).then(user => {});
+      res.json(room.messages);
     })
     .catch(err => console.log(err));
 });

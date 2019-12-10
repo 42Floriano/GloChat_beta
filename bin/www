@@ -112,6 +112,17 @@ server.listen(process.env.PORT, () => {
   console.log(`Listening on http://localhost:${process.env.PORT}`);
 });
 
+const getUsers = () => {
+  let clients = io.sockets.clients().connected;
+  let sockets = Object.values(clients);
+  let users = sockets.map(s => s.user);
+  return users;
+};
+
+const emitUsers = () => {
+  io.emit("users", getUsers());
+};
+
 io.on("connection", socket => {
   console.log("Client connected");
   // socket.on("room", ({ userId }) => {
@@ -123,31 +134,105 @@ io.on("connection", socket => {
   //     .catch(err => console.log(err));
   // });
 
-  socket.on("message", async ({ message, userId, username, socketId }) => {
-    const result = await messageFromFrontEnd(message);
-    const newMessage = result[0].translations;
-    const newAndImprovedMessage = newMessage[0].text;
-    //  const realThing= `${message}
-    //  ${newAndImprovedMessage}`
+  socket.on("new_user", user => {
+    //console.log("New user:", user);
+    socket.user = user;
+    emitUsers();
+  });
 
-    Message.create({
-      text: message,
-      username: username
-    })
-      .then(msg => {
-        io.to(`${socketId}`).emit("message", msg);
-      })
-      .catch(err => console.log(err));
+  socket.on("joinRoom", ({ user, room }) => {
+    console.log(`User ${user.username} joined: ${room}`);
+    socket.join(room);
+    // io.sockets.connected[socketID].join(roomName);
+  });
 
-    Message.create({
-      text: newAndImprovedMessage,
-      username: username
-    })
-      .then(msg => {
-        socket.broadcast.emit("message", msg);
+  socket.on("joinPrivate", ({ user1, user2 }) => {
+    Room.find({ users: { $all: [user1._id, user2._id] } })
+      .then(room => {
+        console.log(room);
+        if (room.length > 0) {
+          console.log("ROOM EXIST");
+          socket.emit("room", room);
+        } else {
+          Room.create({ users: [user1._id, user2._id] }).then(newRoom => {
+            console.log(newRoom);
+            User.findOneAndUpdate(
+              { _id: user1._id },
+              { $push: { rooms: newRoom._id } }
+            ).then(user => {
+              User.findOneAndUpdate(
+                { _id: user2._id },
+                { $push: { rooms: newRoom._id } }
+              ).then(user => {
+                io.emit("welcome", `Welcome`);
+              });
+            });
+          });
+        }
       })
       .catch(err => console.log(err));
   });
 
-  socket.on("disconnect", () => console.log("Client disconnected"));
+  // io.sockets.connected[user2.connection.socketId].join(room.name);
+  // console.log(io.sockets.adapter.rooms[room.name]);
+  // io.to(room.name).emit("privateRoom", room);
+
+  // socket.on("message", async ({ message, userId, username, socketId }) => {
+  //   const result = await messageFromFrontEnd(message);
+  //   const newMessage = result[0].translations;
+  //   const newAndImprovedMessage = newMessage[0].text;
+  //   //  const realThing= `${message}
+  //   //  ${newAndImprovedMessage}`
+
+  //   Message.create({
+  //     text: message,
+  //     username: username
+  //   })
+  //     .then(msg => {
+  //       io.to(`${socketId}`).emit("message", msg);
+  //     })
+  //     .catch(err => console.log(err));
+
+  //   Message.create({
+  //     text: newAndImprovedMessage,
+  //     username: username
+  //   })
+  //     .then(msg => {
+  //       socket.broadcast.emit("message", msg);
+  //     })
+  //     .catch(err => console.log(err));
+  // });
+
+  socket.on(
+    "message",
+    async ({ message, userId, username, roomId, socketId }) => {
+      const result = await messageFromFrontEnd(message);
+      const newMessage = result[0].translations;
+      const newAndImprovedMessage = newMessage[0].text;
+
+      Message.create({ text: message, user: userId, username: username })
+        .then(message => {
+          io.to(`${socketId}`).emit("message", message);
+
+          Room.findOneAndUpdate(
+            { _id: roomId },
+            { $push: { messages: message._id } }
+          ).then(room => {
+            Message.create({
+              text: newAndImprovedMessage,
+              username: username,
+              user: userId
+            }).then(msg => {
+              socket.to(roomId).broadcast.emit("message", msg);
+            });
+          });
+        })
+        .catch(err => console.log(err));
+    }
+  );
+
+  socket.on("disconnect", function() {
+    emitUsers();
+    console.log("User disconnected");
+  });
 });
