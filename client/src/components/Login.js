@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import { Redirect } from "react-router-dom";
-import { Alert, Form, Button } from "react-bootstrap";
+import { Alert, Form, Button, Card } from "react-bootstrap";
 import axios from "axios";
 
 class Login extends Component {
@@ -40,11 +39,15 @@ class Login extends Component {
   render() {
     console.log(this.props);
     return (
-      <div className="container border border-primary p-4 mt-4">
-        <h2 className="text-center">Login</h2>
+      <div className="container border border-secondary p-4 mt-4 mr-auto ml-auto col-md-3 ">
+        <h2 className="text-center" style={{ fontWeight: "bold" }}>
+          Login
+        </h2>
         <Form onSubmit={this.handleSubmit}>
           <Form.Group>
-            <Form.Label htmlFor="username">Username: </Form.Label>
+            <Form.Label htmlFor="username" style={{ fontWeight: "500" }}>
+              Username:{" "}
+            </Form.Label>
             <Form.Control
               type="text"
               name="username"
@@ -54,7 +57,9 @@ class Login extends Component {
             />
           </Form.Group>
           <Form.Group>
-            <Form.Label htmlFor="password">Password: </Form.Label>
+            <Form.Label htmlFor="password" style={{ fontWeight: "500" }}>
+              Password:{" "}
+            </Form.Label>
             <Form.Control
               type="password"
               name="password"
@@ -66,7 +71,20 @@ class Login extends Component {
           {this.state.error && (
             <Alert variant="danger">{this.state.error}</Alert>
           )}
-          <Button type="submit">Log in</Button>
+          <Button
+            style={{
+              backgroundColor: "crimson",
+              color: "white",
+              margin: "20px auto",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              width: "50%"
+            }}
+            type="submit"
+          >
+            Log in
+          </Button>
         </Form>
       </div>
     );

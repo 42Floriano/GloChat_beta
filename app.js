@@ -91,4 +91,10 @@ app.use("/", index);
 const authRoutes = require("./routes/auth");
 app.use("/auth", authRoutes);
 
+const cloudinaryRouter = require("./routes/cloudinaryRoute");
+app.use("/api/cloudinary", cloudinaryRouter);
+
+const test = require("./routes/test");
+app.use("/api/test", test);
+
 module.exports = app;

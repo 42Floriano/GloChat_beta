@@ -5,10 +5,20 @@ const userSchema = new Schema(
   {
     username: String,
     password: String,
+    bio: String,
     email: String,
-    profilePic: String,
+    profilePic: {
+      type: String,
+      default:
+        "https://res.cloudinary.com/djulje0nb/image/upload/v1575889852/glochat/dummy-profile-pic1_jltxbg.png"
+    },
     defaultLanguage: String,
-    rooms: []
+    rooms: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Room"
+      }
+    ]
   },
   {
     timestamps: {

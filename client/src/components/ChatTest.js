@@ -1,86 +1,85 @@
 import React, { Component } from "react";
-import io from "socket.io-client";
+import { Link } from "react-router-dom";
+import Room from "./Room";
 import axios from "axios";
-const endpoint = "http://localhost:5000";
-let socket;
 
 class ChatTest extends Component {
   state = {
     message: "",
+    profilePic: "",
     user: this.props.user,
-    room: "1",
-    messages: []
+    rooms: [],
+    messages: [],
+    socketId: ""
   };
 
-  handleChange = event => {
-    this.setState({
-      [event.target.name]: event.target.value
-    });
-  };
-
-  handleSubmit = event => {
+  handleRoomSubit(event) {
     event.preventDefault();
-    console.log(this.state);
-    socket.emit("message", {
-      message: this.state.message,
-      userId: this.state.user._id,
-      username: this.state.user.username
-    });
-    this.setState({
-      message: ""
-    });
-  };
-
-  componentDidMount() {
-    console.log(this.props);
-    socket = io(endpoint);
     axios
-      .get("/messages")
-      .then(messages => {
-        console.log(messages);
-        this.setState({
-          messages: messages.data
-        });
-      })
+      .post("/room", { room: "ROOM" })
+      .then(res => console.log(res))
       .catch(err => console.log(err));
   }
 
-  componentDidUpdate() {
-    socket.on("message", messages => {
-      this.setState({
-        messages: messages
-      });
+  componentDidMount = () => {
+    console.log("hello");
+    axios.get("/api/test").then(user => {
+      console.log(user.data);
+      this.setState(
+        {
+          profilePic: user.data.profilePic
+        },
+        () => console.log(this.state.profilePic)
+      );
     });
-  }
-
-  componentWillUnmount() {
-    socket.emit("disconnect");
-    socket.off();
-  }
+  };
 
   render() {
+    console.log("hello", this.state.profilePic);
     return (
       <div className="container">
-        <div className="container">
-          {this.state.messages.map(msg => {
-            return (
-              <div>
-                {msg.username} said"{msg.text}"
-              </div>
-            );
-          })}
+        <div
+          className="row mt-4"
+          style={{
+            height: "550px"
+          }}
+        >
+          <div className="col-sm-3 bg-primary">
+            <h2>Rooms</h2>
+            <form onSubmit={this.handleRoomSubit}>
+              <button className="btn btn-light" type="submit">
+                Generate a room
+              </button>
+            </form>
+            <div>
+              {this.state.rooms.map(room => {
+                return (
+                  <p>
+                    <Link className="text-white" to={`/room/${room._id}`}>
+                      {room._id}
+                    </Link>
+                  </p>
+                );
+              })}
+            </div>
+          </div>
+          <Room user={this.state.user} />
         </div>
 
-        <form onSubmit={this.handleSubmit}>
-          <input
-            type="text"
-            name="message"
-            id="message"
-            value={this.state.message}
-            onChange={this.handleChange}
-          />
-          <button type="submit">Send</button>
-        </form>
+        <img
+          src={this.state.profilePic}
+          style={{
+            border: "2px solid black",
+            margin: "30px  20px",
+            display: "flex",
+            float: "right",
+            width: "10%",
+            position: "fixed",
+            bottom: "65%",
+            left: "85%"
+          }}
+          alt="profile"
+        />
       </div>
     );
   }

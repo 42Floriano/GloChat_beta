@@ -1,12 +1,13 @@
 import React, { Component } from "react";
 import {
   Alert,
+  Form,
   FormGroup,
   FormControl,
   FormLabel,
   Button
 } from "react-bootstrap";
-// import { Auth } from "aws-amplify";
+
 import axios from "axios";
 
 class Settings extends Component {
@@ -14,6 +15,7 @@ class Settings extends Component {
     password: "",
     confirmPassword: "",
     error: "",
+    bio: "",
     completed: false
   };
 
@@ -36,7 +38,8 @@ class Settings extends Component {
     if (this.validateForm() === true) {
       axios
         .post("/auth/changeDetails", {
-          password: this.state.password
+          password: this.state.password,
+          bio: this.state.bio
         })
         .then(response => {
           console.log(response.data);
@@ -63,7 +66,10 @@ class Settings extends Component {
 
   render() {
     return (
-      <div className="container">
+      <div className="container border border-secondary p-4 mt-4 mr-auto ml-auto col-md-3 ">
+        <h2 style={{ color: "black", textAlign: "center" }}>
+          Edit your Details!
+        </h2>
         <form onSubmit={this.handleChangeClick}>
           <FormGroup bsSize="large" controlId="password">
             <FormLabel>New Password</FormLabel>
@@ -81,6 +87,16 @@ class Settings extends Component {
               value={this.state.confirmPassword}
             />
           </FormGroup>
+          <Form.Group>
+            <Form.Label htmlFor="text">Add a Bio: </Form.Label>
+            <Form.Control
+              type="text"
+              name="bio"
+              id="bio"
+              value={this.state.bio}
+              onChange={this.handleChange}
+            />
+          </Form.Group>
           <Button
             block
             type="submit"
@@ -88,6 +104,15 @@ class Settings extends Component {
             text="Change Password"
             loadingText="Changing…"
             isLoading={this.state.isChanging}
+            style={{
+              backgroundColor: "crimson",
+              color: "white",
+              margin: "20px auto",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              width: "50%"
+            }}
           >
             Submit
           </Button>

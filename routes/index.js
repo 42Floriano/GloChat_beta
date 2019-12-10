@@ -2,10 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Message = require("../models/Message");
 
-// /* GET home page */
-// router.get("/", (req, res, next) => {
-//   res.send({});
-// });
+/* GET home page */
 
 router.get("/messages", (req, res) => {
   Message.find()
@@ -13,6 +10,10 @@ router.get("/messages", (req, res) => {
       res.json(messages);
     })
     .catch(err => console.log(err));
+});
+
+router.post("/room", (req, res) => {
+  console.log(req.body);
 });
 
 module.exports = router;

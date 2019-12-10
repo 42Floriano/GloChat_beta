@@ -3,8 +3,18 @@ const Schema = mongoose.Schema;
 
 const roomSchema = new Schema({
   name: String,
-  users: [],
-  messages: []
+  users: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Message"
+    }
+  ],
+  messages: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Message"
+    }
+  ]
 });
 
 const Room = mongoose.model("Room", roomSchema);
