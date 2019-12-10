@@ -26,8 +26,13 @@ class Signup extends Component {
         this.setState({
           listeLanguages: listeCountry.data.dictionary
         });
-        console.log(this.state.listeLanguages);
-        console.log(Object.keys(this.state.listeLanguages));
+        //  console.log(this.state.listeLanguages);
+
+        //   const arr = Object.entries(this.state.listeLanguages);
+        //   arr.map(item => {
+        //    console.log(item[0]);
+        //      console.log(item[1].name);
+        //   });
       })
       .catch(err => console.log(err));
   }
@@ -41,12 +46,11 @@ class Signup extends Component {
       },
       () => console.log(this.state.defaultLanguage)
     );
-    console.log(this.getKeyByValue(this.state.listeLanguages, "fr"));
   };
 
-  getKeyByValue(object, value) {
-    return Object.keys(object).find(key => object[key] === value);
-  }
+  // getKeyByValue(object, value) {
+  //   return Object.keys(object).find(key => object[key] === value);
+  // }
 
   imageUpload = event => {
     console.log("the file to be added is", event.target.files[0]);
@@ -81,6 +85,7 @@ class Signup extends Component {
         bio: this.state.bio
       })
       .then(response => {
+        console.log("LOOOOOOOOOOOOOOOOK", this.state.defaultLanguage);
         console.log(response.data);
         this.props.setUser(response.data);
         this.props.history.push("/");
@@ -193,8 +198,17 @@ class Signup extends Component {
               onChange={this.handleChange}
               name="defaultLanguage"
             >
-              {Object.keys(this.state.listeLanguages).map((country, item) => {
+              {/* {Object.keys(this.state.listeLanguages).map((country, item) => {
                 return <option key={item}> {country} </option>;
+              })} */}
+
+              {Object.entries(this.state.listeLanguages).map(country => {
+                return (
+                  <option key={country[0]}>
+                    {" "}
+                    {country[0]} - {country[1].name}{" "}
+                  </option>
+                );
               })}
             </Form.Control>
           </Form.Group>

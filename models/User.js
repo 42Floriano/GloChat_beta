@@ -7,6 +7,7 @@ const userSchema = new Schema(
     password: String,
     bio: String,
     email: String,
+    defaultLanguage: String,
     profilePic: {
       type: String,
       default:
@@ -20,7 +21,6 @@ const userSchema = new Schema(
       type: Boolean,
       default: false
     },
-    defaultLanguage: String,
     rooms: [
       {
         type: Schema.Types.ObjectId,

@@ -115,7 +115,8 @@ class Chat extends Component {
       userId: this.state.user._id,
       username: this.state.user.username,
       socketId: this.state.socketId,
-      roomId: this.state.roomId
+      roomId: this.state.roomId,
+      defaultLanguage: this.state.user.defaultLanguage
     });
     this.setState({
       message: ""
