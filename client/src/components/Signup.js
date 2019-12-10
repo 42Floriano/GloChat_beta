@@ -26,17 +26,31 @@ class Signup extends Component {
         this.setState({
           listeLanguages: listeCountry.data.dictionary
         });
-        console.log(Object.keys(this.state.listeLanguages));
+        //  console.log(this.state.listeLanguages);
+
+        //   const arr = Object.entries(this.state.listeLanguages);
+        //   arr.map(item => {
+        //    console.log(item[0]);
+        //      console.log(item[1].name);
+        //   });
       })
       .catch(err => console.log(err));
   }
 
+  // console.log(getKeyByValue(this.state.listeLanguages,"fr"));
+
   handleChange = event => {
-    this.setState({
-      [event.target.name]: event.target.value
-    });
-    console.log(this.state.listeLanguages);
+    this.setState(
+      {
+        [event.target.name]: event.target.value
+      },
+      () => console.log(this.state.defaultLanguage)
+    );
   };
+
+  // getKeyByValue(object, value) {
+  //   return Object.keys(object).find(key => object[key] === value);
+  // }
 
   imageUpload = event => {
     console.log("the file to be added is", event.target.files[0]);
@@ -65,11 +79,13 @@ class Signup extends Component {
         username: this.state.username,
         password: this.state.password,
         email: this.state.email,
-        listeLanguages: this.state.listeLanguages,
+        defaultLanguage: this.state.defaultLanguage,
+        // listeLanguages: this.state.listeLanguages,
         profilePic: this.state.profilePic,
         bio: this.state.bio
       })
       .then(response => {
+        console.log("LOOOOOOOOOOOOOOOOK", this.state.defaultLanguage);
         console.log(response.data);
         this.props.setUser(response.data);
         this.props.history.push("/");
@@ -128,6 +144,7 @@ class Signup extends Component {
               required="true"
               pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,15}"
             />
+
             <b
               style={{
                 color: "#1D2951",
@@ -152,6 +169,7 @@ class Signup extends Component {
               onChange={this.handleChange}
             />
           </Form.Group>
+
           <Form.Group>
             <Form.Label htmlFor="text" style={{ fontWeight: "500" }}>
               Upload an Image:{" "}
@@ -173,16 +191,22 @@ class Signup extends Component {
             <Form.Label style={{ fontWeight: "500" }}>
               Default Language
             </Form.Label>
+
             <Form.Control
               as="select"
               value={this.state.defaultLanguage}
               onChange={this.handleChange}
+              name="defaultLanguage"
             >
-              {Object.keys(this.state.listeLanguages).map((country, item) => {
+              {/* {Object.keys(this.state.listeLanguages).map((country, item) => {
+                return <option key={item}> {country} </option>;
+              })} */}
+
+              {Object.entries(this.state.listeLanguages).map(country => {
                 return (
-                  <option key={item} value={country}>
+                  <option key={country[0]}>
                     {" "}
-                    {country}{" "}
+                    {country[0]} - {country[1].name}{" "}
                   </option>
                 );
               })}

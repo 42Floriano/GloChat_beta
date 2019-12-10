@@ -4,9 +4,20 @@ const Schema = mongoose.Schema;
 const messageSchema = new Schema(
   {
     text: String,
-    language: String,
-    lastActiveAt: Date,
-    username: String
+    translations: [
+      {
+        text: String,
+        user: {
+          type: Schema.Types.ObjectId,
+          ref: "User"
+        }
+      }
+    ],
+    username: String,
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: "User"
+    }
   },
   {
     timestamps: {

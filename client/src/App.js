@@ -5,8 +5,8 @@ import NavBar from "./components/Navbar";
 import Home from "./components/Home";
 import Signup from "./components/Signup";
 import Login from "./components/Login";
-// import Chat from "./components/Chat";
-import ChatTest from "./components/ChatTest";
+import Chat from "./components/Chat";
+//import ChatTest from "./components/ChatTest";
 import Settings from "./components/Settings";
 import About from "./components/About";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -23,6 +23,7 @@ class App extends Component {
   };
 
   render() {
+    console.log(this.props);
     return (
       <div className="App">
         <NavBar user={this.state.user} clearUser={this.setUser} />
@@ -31,7 +32,7 @@ class App extends Component {
           <Route
             exact
             path="/"
-            render={props => <ChatTest user={this.state.user} {...props} />}
+            render={props => <Chat user={this.state.user} {...props} />}
           />
         ) : (
           <Route exact path="/" component={Home} />
@@ -65,7 +66,7 @@ class App extends Component {
         />
         <Route exact path="/about" setUser={this.setUser} component={About} />
 
-        {/* <Route exact path="/chat" component={Chat} /> */}
+        {/* <Route exact path="/chat" component={ChatTest} /> */}
       </div>
     );
   }

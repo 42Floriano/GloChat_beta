@@ -8,7 +8,6 @@ import axios from "axios";
 
 axios.get("/auth/loggedin").then(response => {
   const user = response.data;
-  console.log(response);
   ReactDOM.render(
     <BrowserRouter>
       <App user={user} />

@@ -1,276 +1,219 @@
 import React, { Component } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
+import { Container, Row, Col, Button } from "react-bootstrap";
+import io from "socket.io-client";
+import axios from "axios";
+import Users from "./Users";
+import Message from "./Message";
+
+const endpoint = "http://localhost:5000";
+
+let socket = io(endpoint);
 
 class Chat extends Component {
-  state = {};
+  state = {
+    user: this.props.user,
+    users: [],
+    onlineUsers: [],
+    messages: [],
+    message: "",
+    roomId: "",
+    rooms: [],
+    search: "",
+    socketId: socket.id
+  };
+
+  componentDidMount = () => {
+    axios
+      .get("http://geoplugin.net/json.gp")
+      .then(resp => {
+        const { geoplugin_countryCode, geoplugin_city } = resp.data;
+
+        axios.get("/rooms").then(res => {
+          socket.emit("new_user", this.state.user);
+          socket.on("users", users => {
+            this.setState({
+              onlineUsers: users,
+              rooms: res.data,
+              user: {
+                ...this.props.user,
+                isOnline: true,
+                connection: {
+                  countryCode: geoplugin_countryCode,
+                  city: geoplugin_city
+                }
+              }
+            });
+          });
+        });
+
+        socket.on("message", message => {
+          console.log(message);
+          //this.getMessages(this.state.roomId);
+          this.setState({
+            messages: [...this.state.messages, message]
+          });
+        });
+      })
+      .catch(err => console.log(err));
+
+    socket.emit("disconnect");
+
+    socket.off();
+  };
+
+  handleChange = event => {
+    this.setState({
+      [event.target.name]: event.target.value
+    });
+  };
+
+  searchUsers = event => {
+    event.preventDefault();
+    axios
+      .get(`/users/${this.state.search}`)
+      .then(res => {
+        console.log(res.data);
+        this.setState({
+          users: [...this.state.users, ...res.data],
+          search: ""
+        });
+      })
+      .catch(err => console.log(err));
+  };
+
+  joinRoom = room => {
+    socket.emit("joinRoom", {
+      user: this.state.user,
+      room: room._id
+    });
+    this.setState({
+      roomId: room._id
+    });
+  };
+
+  joinPrivate = user => {
+    console.log(user);
+    socket.emit("joinPrivate", { user1: this.state.user, user2: user });
+    socket.on("welcome", message => {
+      console.log(message);
+    });
+    socket.on("room", room => {
+      console.log(room);
+      this.setState(
+        {
+          roomId: room[0]._id
+        },
+        () => this.getMessages(room[0])
+      );
+    });
+  };
+
+  sendMessage = event => {
+    event.preventDefault();
+    socket.emit("message", {
+      message: this.state.message,
+      userId: this.state.user._id,
+      username: this.state.user.username,
+      socketId: this.state.socketId,
+      roomId: this.state.roomId,
+      defaultLanguage: this.state.user.defaultLanguage
+    });
+    this.setState({
+      message: ""
+    });
+  };
+
+  getMessages = room => {
+    console.log("GETMESSAGES", room);
+    axios
+      .get(`/messages/${room._id}`)
+      .then(res => {
+        this.setState({
+          messages: res.data
+        });
+        this.joinRoom(room);
+      })
+      .catch(err => console.log(err));
+  };
 
   render() {
     return (
-
-      <div id="chatBody">
-      <div id="frame">
-      <div id="sidepanel">
-
-      {/* --------- Own profile -----------*/}
-
-        <div id="profile">
-          <div class="wrap">
-            <img id="profile-img" src="http://emilcarlsson.se/assets/mikeross.png" class="online" alt="" />
-            <p>Mike Ross</p>
-            <i className="fa fa-chevron-down expand-button" aria-hidden="true"></i>
-            <div id="status-options">
-              <ul>
-                <li className="contact">
-                  <div className="wrap">
-                    <span className="contact-status online"></span>
-                    <img
-                      src="http://emilcarlsson.se/assets/louislitt.png"
-                      alt=""
-                    />
-                    <div className="meta">
-                      <p className="name">Louis Litt</p>
-                      <p className="preview">You just got LITT up, Mike.</p>
-                    </div>
-                  </div>
-                </li>
-                <li className="contact active">
-                  <div className="wrap">
-                    <span className="contact-status busy"></span>
-                    <img
-                      src="http://emilcarlsson.se/assets/harveyspecter.png"
-                      alt=""
-                    />
-                    <div className="meta">
-                      <p className="name">Harvey Specter</p>
-                      <p className="preview">
-                        Wrong. You take the gun, or you pull out a bigger one.
-                        Or, you call their bluff. Or, you do any one of a
-                        hundred and forty six other things.
-                      </p>
-                    </div>
-                  </div>
-                </li>
-                <li className="contact">
-                  <div className="wrap">
-                    <span className="contact-status away"></span>
-                    <img
-                      src="http://emilcarlsson.se/assets/rachelzane.png"
-                      alt=""
-                    />
-                    <div className="meta">
-                      <p className="name">Rachel Zane</p>
-                      <p className="preview">
-                        I was thinking that we could have chicken tonight,
-                        sounds good?
-                      </p>
-                    </div>
-                  </div>
-                </li>
-                <li className="contact">
-                  <div className="wrap">
-                    <span className="contact-status online"></span>
-                    <img
-                      src="http://emilcarlsson.se/assets/donnapaulsen.png"
-                      alt=""
-                    />
-                    <div className="meta">
-                      <p className="name">Donna Paulsen</p>
-                      <p className="preview">
-                        Mike, I know everything! I'm Donna..
-                      </p>
-                    </div>
-                  </div>
-                </li>
-                <li className="contact">
-                  <div className="wrap">
-                    <span className="contact-status busy"></span>
-                    <img
-                      src="http://emilcarlsson.se/assets/jessicapearson.png"
-                      alt=""
-                    />
-                    <div className="meta">
-                      <p className="name">Jessica Pearson</p>
-                      <p className="preview">
-                        Have you finished the draft on the Hinsenburg deal?
-                      </p>
-                    </div>
-                  </div>
-                </li>
-                <li className="contact">
-                  <div className="wrap">
-                    <span className="contact-status"></span>
-                    <img
-                      src="http://emilcarlsson.se/assets/haroldgunderson.png"
-                      alt=""
-                    />
-                    <div className="meta">
-                      <p className="name">Harold Gunderson</p>
-                      <p className="preview">Thanks Mike! :)</p>
-                    </div>
-                  </div>
-                </li>
-                <li className="contact">
-                  <div className="wrap">
-                    <span className="contact-status"></span>
-                    <img
-                      src="http://emilcarlsson.se/assets/danielhardman.png"
-                      alt=""
-                    />
-                    <div className="meta">
-                      <p className="name">Daniel Hardman</p>
-                      <p className="preview">
-                        We'll meet again, Mike. Tell Jessica I said 'Hi'.
-                      </p>
-                    </div>
-                  </div>
-                </li>
-                <li className="contact">
-                  <div className="wrap">
-                    <span className="contact-status busy"></span>
-                    <img
-                      src="http://emilcarlsson.se/assets/katrinabennett.png"
-                      alt=""
-                    />
-                    <div className="meta">
-                      <p className="name">Katrina Bennett</p>
-                      <p className="preview">
-                        I've sent you the files for the Garrett trial.
-                      </p>
-                    </div>
-                  </div>
-                </li>
-                <li className="contact">
-                  <div className="wrap">
-                    <span className="contact-status"></span>
-                    <img
-                      src="http://emilcarlsson.se/assets/charlesforstman.png"
-                      alt=""
-                    />
-                    <div className="meta">
-                      <p className="name">Charles Forstman</p>
-                      <p className="preview">Mike, this isn't over.</p>
-                    </div>
-                  </div>
-                </li>
-                <li className="contact">
-                  <div className="wrap">
-                    <span className="contact-status"></span>
-                    <img
-                      src="http://emilcarlsson.se/assets/jonathansidwell.png"
-                      alt=""
-                    />
-                    <div className="meta">
-                      <p className="name">Jonathan Sidwell</p>
-                      <p className="preview">
-                        <span>You:</span> That's bullshit. This deal is solid.
-                      </p>
-                    </div>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div id="bottom-bar">
-              <button id="addcontact">
-                <i className="fa fa-user-plus fa-fw" aria-hidden="true"></i>{" "}
-                <span>Add contact</span>
+      <Container>
+        <Row
+          className="mt-4"
+          style={{
+            height: "500px"
+          }}
+        >
+          <Col xs={3} className="bg-light">
+            <Container>
+              <h2>Users</h2>
+              <form onSubmit={this.searchUsers}>
+                <input
+                  type="text"
+                  name="search"
+                  id="search"
+                  value={this.state.search}
+                  onChange={this.handleChange}
+                />
+                <button className="btn btn-light ml-4" type="submit">
+                  Search
+                </button>
+              </form>
+              {this.state.users.map(user => {
+                if (
+                  //this.state.onlineUsers &&
+                  this.state.onlineUsers
+                    .map(x => {
+                      return x && x._id;
+                    })
+                    .includes(user._id)
+                ) {
+                  return (
+                    <Col key={user._id}>
+                      <Button
+                        className="bg-success  m-2"
+                        onClick={() => this.joinPrivate(user)}
+                      >
+                        {user.username}
+                      </Button>
+                    </Col>
+                  );
+                } else {
+                  return (
+                    <Col key={user._id}>
+                      <Button
+                        className="bg-danger  m-2"
+                        onClick={() => this.joinPrivate(user)}
+                      >
+                        {user.username}
+                      </Button>
+                    </Col>
+                  );
+                }
+              })}
+            </Container>
+          </Col>
+          <Col xs={6} id="chat" className="bg-primary">
+            {this.state.messages.map(msg => {
+              return <Message msg={msg} key={msg._id} />;
+            })}
+            <form onSubmit={this.sendMessage}>
+              <input
+                type="text"
+                name="message"
+                id="message"
+                value={this.state.message}
+                onChange={this.handleChange}
+              />
+              <button className="btn btn-light ml-4" type="submit">
+                Send
               </button>
-              <button id="settings">
-                <i className="fa fa-cog fa-fw" aria-hidden="true"></i>{" "}
-                <span>Settings</span>
-              </button>
-            </div>
-          </div>
-        </div>
-        <div id="search">
-          <label for=""><i className="fa fa-search" aria-hidden="true"></i></label>
-          <input type="text" placeholder="Search contacts..." />
-        </div>
-
-        { /* --------- Room list -----------*/}
-        <div id="contacts">
-          <ul>
-            <li className="contact">
-              <div className="wrap">
-                <div className="meta">
-                  <p className="name">Room 1</p>
-                </div>
-              </div>
-            </li>     
-          </ul>
-        </div>
-
-        { /* --------- Contact liost -----------*/}
-        <div id="contacts">
-          <ul>
-            <li className="contact">
-              <div className="wrap">
-                <span className="contact-status online"></span>
-                <img src="http://emilcarlsson.se/assets/louislitt.png" alt="" />
-                <div className="meta">
-                  <p className="name">Louis Litt</p>
-                  <p className="preview">You just got LITT up, Mike.</p>
-                </div>
-              </div>
-            </li>     
-          </ul>
-        </div>
-
-
-        {/*------------ Settings webcam, mic and co... -----------------*/}
-        <div id="bottom-bar">
-          <button id="settings"><i className="fa fa-cog fa-fw" aria-hidden="true"></i> <span>Settings</span></button>
-        </div>
-      </div>
-
-
-        {/*--------------- The contact or group you chat with  ------------------------ */}
-
-
-      <div className="content">
-        <div className="contact-profile">
-          <img src="http://emilcarlsson.se/assets/harveyspecter.png" alt="" />
-          <p>Harvey Specter</p>
-          <div className="social-media">
-            <i className="fa fa-facebook" aria-hidden="true"></i>
-            <i className="fa fa-twitter" aria-hidden="true"></i>
-             <i className="fa fa-instagram" aria-hidden="true"></i>
-          </div>
-        </div>
-
-
-        {/* --------- Conversation ----------- */}
-        <div className="messages">
-          <ul>
-            <li className="sent">
-              <img src="http://emilcarlsson.se/assets/mikeross.png" alt="" />
-              <p>Message 1</p>
-            </li>
-            <li className="replies">
-              <img src="http://emilcarlsson.se/assets/harveyspecter.png" alt="" />
-              <p>answer 1</p>
-            </li>
-            <li className="replies">
-              <img src="http://emilcarlsson.se/assets/harveyspecter.png" alt="" />
-              <p>answer 2</p>
-            </li>
-            <li className="sent">
-              <img src="http://emilcarlsson.se/assets/mikeross.png" alt="" />
-              <p>Oh yeah, did Michael Jordan tell you th?</p>
-            </li>
-          </ul>
-        </div>
-
-        <div className="message-input">
-          <div className="wrap">
-          <input type="text" placeholder="Write your message..." />
-          <i className="fa fa-paperclip attachment" aria-hidden="true"></i>
-          <button className="submit"><i className="fa fa-paper-plane" aria-hidden="true"></i> Send </button>
-          <button className="submit"><i className="fa fa-paper-plane" aria-hidden="true"></i> Select Language </button>
-          </div>
-        </div>
-        </div>
-        </div>
-        </div>
+            </form>
+          </Col>
+          <Users rooms={this.state.rooms} getMessages={this.getMessages} />
+        </Row>
+      </Container>
     );
   }
 }
