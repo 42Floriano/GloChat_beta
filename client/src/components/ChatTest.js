@@ -1,58 +1,88 @@
-import React, { Component } from "react";
-import { Link } from "react-router-dom";
-import Room from "./Room";
-import axios from "axios";
+import React, { Component } from 'react';
+import { Link, Route } from 'react-router-dom';
+import axios from 'axios';
+import Room from './Room';
 
 class ChatTest extends Component {
-  state = {
-    message: "",
-    user: this.props.user,
-    rooms: [],
-    messages: [],
-    socketId: ""
-  };
+	state = {
+		message: '',
+		user: this.props.user,
+		rooms: [],
+		roomName: '',
+		messages: [],
+		socketId: ''
+	};
 
-  handleRoomSubit(event) {
-    event.preventDefault();
-    axios
-      .post("/room", { room: "ROOM" })
-      .then(res => console.log(res))
-      .catch(err => console.log(err));
-  }
+	componentDidMount = () => {
+		axios
+			.get('/getRooms')
+			.then((res) => {
+				this.setState({
+					rooms: res.data
+				});
+			})
+			.catch((err) => console.log(err));
+	};
 
-  render() {
-    return (
-      <div className="container">
-        <div
-          className="row mt-4"
-          style={{
-            height: "550px"
-          }}
-        >
-          <div className="col-sm-3 bg-primary">
-            <h2>Rooms</h2>
-            <form onSubmit={this.handleRoomSubit}>
-              <button className="btn btn-light" type="submit">
-                Generate a room
-              </button>
-            </form>
-            <div>
-              {this.state.rooms.map(room => {
-                return (
-                  <p>
-                    <Link className="text-white" to={`/room/${room._id}`}>
-                      {room._id}
-                    </Link>
-                  </p>
-                );
-              })}
-            </div>
-          </div>
-          <Room user={this.state.user} />
-        </div>
-      </div>
-    );
-  }
+	handleChange = (event) => {
+		this.setState({
+			[event.target.name]: event.target.value
+		});
+	};
+
+	handleRoomSubit = (event) => {
+		event.preventDefault();
+		axios
+			.post('/room', { userId: this.state.user._id, name: this.state.roomName })
+			.then((res) => {
+				this.setState({
+					rooms: [ ...this.state.rooms, res.data ]
+				});
+			})
+			.catch((err) => console.log(err));
+	};
+
+	handleRoom = (event) => {
+		event.preventDefault();
+		console.log(event.target.value);
+		// this.setState({
+		//   room:
+		// })
+	};
+
+	render() {
+		return (
+			<React.Fragment>
+				<div className="col-sm-3 bg-primary">
+					<h2>Rooms</h2>
+					<form onSubmit={this.handleRoomSubit}>
+						<input
+							type="text"
+							name="roomName"
+							id="roomName"
+							value={this.props.roomName}
+							onChange={this.handleChange}
+						/>
+						<button className="btn btn-light mt-2" type="submit">
+							Create a room
+						</button>
+					</form>
+					<div>
+						{this.state.rooms.map((room) => {
+							return (
+								<p>
+									<Link className="text-white" to={`/${room._id}`}>
+										{room.name}
+									</Link>
+								</p>
+							);
+						})}
+					</div>
+				</div>
+				{this.state.room && <Room user={this.state.user} />}
+			</React.Fragment>
+		);
+	}
 }
 
 export default ChatTest;
