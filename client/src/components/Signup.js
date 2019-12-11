@@ -26,8 +26,13 @@ class Signup extends Component {
         this.setState({
           listeLanguages: listeCountry.data.dictionary
         });
-        console.log(this.state.listeLanguages);
-        console.log(Object.keys(this.state.listeLanguages));
+        //  console.log(this.state.listeLanguages);
+
+        //   const arr = Object.entries(this.state.listeLanguages);
+        //   arr.map(item => {
+        //    console.log(item[0]);
+        //      console.log(item[1].name);
+        //   });
       })
       .catch(err => console.log(err));
   }
@@ -41,12 +46,11 @@ class Signup extends Component {
       },
       () => console.log(this.state.defaultLanguage)
     );
-    console.log(this.getKeyByValue(this.state.listeLanguages, "fr"));
   };
 
-  getKeyByValue(object, value) {
-    return Object.keys(object).find(key => object[key] === value);
-  }
+  // getKeyByValue(object, value) {
+  //   return Object.keys(object).find(key => object[key] === value);
+  // }
 
   imageUpload = event => {
     console.log("the file to be added is", event.target.files[0]);
@@ -58,7 +62,7 @@ class Signup extends Component {
     uploadData.append("profilePic", files);
     this.setState({ upload: true }, () => {
       axios.post("/api/cloudinary", uploadData).then(response => {
-        const urlPath = response.data.secure_url;
+        //   const urlPath = response.data.secure_url;
         this.setState({ profilePic: response.data.secure_url }, () => {
           console.log(this.state);
           this.setState({ upload: false });
@@ -76,11 +80,11 @@ class Signup extends Component {
         password: this.state.password,
         email: this.state.email,
         defaultLanguage: this.state.defaultLanguage,
-        // listeLanguages: this.state.listeLanguages,
         profilePic: this.state.profilePic,
         bio: this.state.bio
       })
       .then(response => {
+        console.log("LOOOOOOOOOOOOOOOOK", this.state.defaultLanguage);
         console.log(response.data);
         this.props.setUser(response.data);
         this.props.history.push("/");
@@ -96,7 +100,7 @@ class Signup extends Component {
 
   render() {
     return (
-      <div className="container border border-secondary p-4 mt-4 mr-auto ml-auto col-md-4 ">
+      <div className="container border border-secondary p-4 mt-4 mr-auto ml-auto col-md-4  ">
         <h2 className="text-center" style={{ fontWeight: "bold" }}>
           SignUp
         </h2>
@@ -144,7 +148,7 @@ class Signup extends Component {
               style={{
                 color: "#1D2951",
                 textAlign: "center",
-                fontSize: "5px "
+                fontSize: "0.5em "
               }}
             >
               Your password should contain at least one uppercase letter, one
@@ -193,8 +197,17 @@ class Signup extends Component {
               onChange={this.handleChange}
               name="defaultLanguage"
             >
-              {Object.keys(this.state.listeLanguages).map((country, item) => {
+              {/* {Object.keys(this.state.listeLanguages).map((country, item) => {
                 return <option key={item}> {country} </option>;
+              })} */}
+
+              {Object.entries(this.state.listeLanguages).map(country => {
+                return (
+                  <option key={country[0]}>
+                    {" "}
+                    {country[0]} - {country[1].name}{" "}
+                  </option>
+                );
               })}
             </Form.Control>
           </Form.Group>

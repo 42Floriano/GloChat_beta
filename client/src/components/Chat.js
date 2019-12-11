@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { Container, Row, Col, Button } from "react-bootstrap";
+import { Container, Row, Col, Button, Form } from "react-bootstrap";
+import ScrollToBottom from "react-scroll-to-bottom";
 import io from "socket.io-client";
 import axios from "axios";
 import Users from "./Users";
@@ -20,10 +21,29 @@ class Chat extends Component {
     rooms: [],
     search: "",
     socketId: socket.id,
-    user2: {}
+    listeLanguages: {},
+    defaultLanguage: this.props.user.defaultLanguage
   };
 
   componentDidMount = () => {
+    axios
+      .get(
+        "https://api.cognitive.microsofttranslator.com/languages?api-version=3.0"
+      )
+      .then(listeCountry => {
+        this.setState({
+          listeLanguages: listeCountry.data.dictionary
+        });
+        //  console.log(this.state.listeLanguages);
+
+        //   const arr = Object.entries(this.state.listeLanguages);
+        //   arr.map(item => {
+        //    console.log(item[0]);
+        //      console.log(item[1].name);
+        //   });
+      })
+      .catch(err => console.log(err));
+
     axios
       .get("http://geoplugin.net/json.gp")
       .then(resp => {
@@ -83,18 +103,17 @@ class Chat extends Component {
       user: this.state.user,
       room: room._id
     });
-    this.setState(
-      {
-        roomId: room._id
-      },
-      this.getMessages(room)
-    );
+    this.setState({
+      roomId: room._id
+    });
+    this.getMessages(room);
   };
 
   joinPrivate = user => {
     socket.emit("joinPrivate", { user1: this.state.user, user2: user });
     socket.on("welcome", message => {
       console.log(message);
+      this.getRooms();
     });
     socket.on("room", room => {
       this.setState(
@@ -114,7 +133,8 @@ class Chat extends Component {
       userId: this.state.user._id,
       username: this.state.user.username,
       socketId: this.state.socketId,
-      roomId: this.state.roomId
+      roomId: this.state.roomId,
+      defaultLanguage: this.state.user.defaultLanguage
     });
     this.setState({
       message: ""
@@ -141,6 +161,7 @@ class Chat extends Component {
   };
 
   render() {
+    console.log(this.state);
     return (
       <Container>
         <Row
@@ -149,24 +170,6 @@ class Chat extends Component {
             height: "550px"
           }}
         >
-          <Users rooms={this.state.rooms} joinRoom={this.joinRoom} />
-
-          <Col xs={6} id="chat" className="bg-primary">
-            {this.state.messages.map(msg => {
-              return <Message msg={msg} key={msg._id} user={this.state.user} />;
-            })}
-            <Container>
-              <form onSubmit={this.sendMessage}>
-                <input
-                  type="text"
-                  name="message"
-                  id="message"
-                  value={this.state.message}
-                  onChange={this.handleChange}
-                />
-              </form>
-            </Container>
-          </Col>
           <Col xs={3} className="bg-light">
             <Container>
               <h2>Users</h2>
@@ -215,6 +218,52 @@ class Chat extends Component {
               })}
             </Container>
           </Col>
+          <Col xs={6} id="chat" className="bg-primary">
+            <ScrollToBottom className="messages">
+              {this.state.messages.map(msg => {
+                return (
+                  <Message user={this.state.user} msg={msg} key={msg._id} />
+                );
+              })}
+            </ScrollToBottom>
+
+            <form onSubmit={this.sendMessage}>
+              <input
+                type="text"
+                name="message"
+                id="message"
+                value={this.state.message}
+                onChange={this.handleChange}
+              />
+
+              <Form.Group controlId="exampleForm.ControlSelect1">
+                <Form.Label style={{ fontWeight: "500" }}>
+                  Select your language
+                </Form.Label>
+
+                <Form.Control
+                  as="select"
+                  value={this.state.defaultLanguage}
+                  onChange={this.handleChange}
+                  name="defaultLanguage"
+                >
+                  {Object.entries(this.state.listeLanguages).map(country => {
+                    return (
+                      <option key={country[0]}>
+                        {" "}
+                        {country[0]} - {country[1].name}{" "}
+                      </option>
+                    );
+                  })}
+                </Form.Control>
+              </Form.Group>
+
+              <button className="btn btn-light ml-4" type="submit">
+                Send
+              </button>
+            </form>
+          </Col>
+          <Users rooms={this.state.rooms} joinRoom={this.joinRoom} />
         </Row>
       </Container>
     );

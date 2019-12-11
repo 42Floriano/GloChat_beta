@@ -26,6 +26,7 @@ class Login extends Component {
         console.log(response.data);
         this.props.setUser(response.data);
         this.props.history.push("/");
+        console.log(response.data);
       })
       .catch(err => {
         if (err.response.data.message) {

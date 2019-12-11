@@ -6,7 +6,15 @@ const User = require("../models/User");
 const uploadCloud = require("../config/cloudinary");
 
 router.post("/signup", uploadCloud.single("imagePath"), (req, res, next) => {
-  const { username, password, profilePic, bio, email } = req.body;
+  const {
+    username,
+    password,
+    profilePic,
+    bio,
+    email,
+    defaultLanguage
+  } = req.body;
+  console.log(profilePic);
   const defaultUserImage =
     "https://res.cloudinary.com/djulje0nb/image/upload/v1575889852/glochat/dummy-profile-pic1_jltxbg.png";
 
@@ -34,6 +42,7 @@ router.post("/signup", uploadCloud.single("imagePath"), (req, res, next) => {
             username: username,
             password: hash,
             profilePic: imagePath,
+            defaultLanguage: defaultLanguage,
             bio: bio,
             email: email
           });
@@ -53,11 +62,13 @@ router.get("/google", passport.authenticate("google", { scope: ["profile"] }));
 
 router.get(
   "/google/callback",
-  passport.authenticate("google", {
-    failureRedirect: "/auth/login",
-    successRedirect: "/"
-  })
+  passport.authenticate("google", { failureRedirect: "/auth/login" }),
+  function(req, res) {
+    // Successful authentication, redirect home.
+    console.log(res);
+  }
 );
+
 router.post("/login", (req, res, next) => {
   passport.authenticate("local", (err, user) => {
     if (err) {
@@ -83,7 +94,7 @@ router.get("/loggedin", (req, res) => {
 });
 
 router.post("/changeDetails", (req, res) => {
-  const { password } = req.body;
+  const { password, bio, profilePic } = req.body;
 
   bcrypt
     .genSalt()
@@ -93,9 +104,8 @@ router.post("/changeDetails", (req, res) => {
     .then(hash => {
       return User.findByIdAndUpdate(
         { _id: req.user._id },
-        { password: hash },
-        { new: true },
-        { bio: bio }
+        { password: hash, bio, profilePic },
+        { new: true }
       );
     })
     .then(User => {
