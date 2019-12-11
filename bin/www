@@ -94,9 +94,6 @@ server.on("error", error => {
   }
 });
 
-// const socketio = require("socket.io");
-// const io = socketio(server);
-module.exports = server;
 const io = require("socket.io").listen(server);
 const Message = require("../models/Message");
 const Room = require("../models/Room");
@@ -120,12 +117,9 @@ const emitUsers = () => {
 const getUserSocket = user => {
   let clients = io.sockets.clients().connected;
   let sockets = Object.values(clients);
-  let usersSockets = sockets.filter(s => {
-    if (s.user) {
-      return { userId: s.user._id, socketId: s.id };
-    }
+  let usersSockets = sockets.map(s => {
+    return { userId: s.user._id, socketId: s.id };
   });
-  console.log(usersSockets);
   const socket = usersSockets.find(
     el => el.userId.toString() === user._id.toString()
   );
@@ -146,18 +140,13 @@ io.on("connection", socket => {
   });
 
   socket.on("joinPrivate", ({ user1, user2 }) => {
-    console.log(user2);
-    const usersOnline = getUsers();
-    // if (usersOnline.some(el => el._id.toString() === user2._id.toString())) {
-    // }
     Room.find({ users: { $all: [user1._id, user2._id] } })
       .then(room => {
-        const user2SocketId = getUserSocket(user2);
-
         if (room.length > 0) {
           socket.emit("room", room);
-          console.log(user2SocketId);
-          io.to(`${user2SocketId}`).emit("room", room);
+          if (getUserSocket(user2)) {
+            io.to(`${getUserSocket(user2)}`).emit("room", room);
+          }
         } else {
           Room.create({ users: [user1._id, user2._id] }).then(newRoom => {
             User.findOneAndUpdate(
@@ -169,6 +158,9 @@ io.on("connection", socket => {
                 { $push: { rooms: newRoom._id } }
               ).then(() => {
                 io.emit("welcome", `Welcome`);
+                if (getUserSocket(user2)) {
+                  io.to(`${getUserSocket(user2)}`).emit("welcome", "Welcome");
+                }
               });
             });
           });
@@ -179,8 +171,6 @@ io.on("connection", socket => {
 
   socket.on("message", ({ message, userId, username, roomId, socketId }) => {
     console.log("USER ID, MESSAGE SENT    ", userId, typeof userId);
-
-    // find the room
     Room.findOne({ _id: roomId })
       .populate("users")
       .then(response => {

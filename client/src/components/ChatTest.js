@@ -27,6 +27,7 @@ class Chat extends Component {
 
   render() {
     return (
+      <React.Fragment>
       <div>
         <div>
           <img
@@ -75,7 +76,7 @@ class Chat extends Component {
           <input type="text" placeholder="Search contacts..." />
         </div>
 
-        { /* --------- Room list -----------*/}
+        
         <div id="contacts">
           <ul>
             <li className="contact">
@@ -88,7 +89,6 @@ class Chat extends Component {
           </ul>
         </div>
 
-        { /* --------- Contact liost -----------*/}
         <div id="contacts">
           <ul>
             <li className="contact">
@@ -105,14 +105,12 @@ class Chat extends Component {
         </div>
 
 
-        {/*------------ Settings webcam, mic and co... -----------------*/}
         <div id="bottom-bar">
           <button id="settings"><i className="fa fa-cog fa-fw" aria-hidden="true"></i> <span>Settings</span></button>
         </div>
       </div>
 
 
-        {/*--------------- The contact or group you chat with  ------------------------ */}
 
 
       <div className="content">
@@ -158,8 +156,10 @@ class Chat extends Component {
           </div>
         </div>
         </div>
-        </div>
-        </div>
+        
+
+        
+        </React.Fragment>
     );
   }
 }

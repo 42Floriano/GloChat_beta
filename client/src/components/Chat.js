@@ -70,6 +70,20 @@ class Chat extends Component {
             messages: [...this.state.messages, message]
           });
         });
+
+        socket.on("welcome", message => {
+          console.log(message);
+          this.getRooms();
+        });
+        socket.on("room", room => {
+          this.setState(
+            {
+              roomId: room[0]._id
+            },
+            () => this.joinRoom(room[0])
+          );
+          this.getRooms();
+        });
       })
       .catch(err => console.log(err));
 
@@ -111,19 +125,6 @@ class Chat extends Component {
 
   joinPrivate = user => {
     socket.emit("joinPrivate", { user1: this.state.user, user2: user });
-    socket.on("welcome", message => {
-      console.log(message);
-      this.getRooms();
-    });
-    socket.on("room", room => {
-      this.setState(
-        {
-          roomId: room[0]._id
-        },
-        () => this.joinRoom(room[0])
-      );
-      this.getRooms();
-    });
   };
 
   sendMessage = event => {
@@ -161,7 +162,6 @@ class Chat extends Component {
   };
 
   render() {
-    console.log(this.state);
     return (
       <Container>
         <Row
