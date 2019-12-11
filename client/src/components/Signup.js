@@ -10,7 +10,7 @@ class Signup extends Component {
     password: "",
     email: "",
     bio: "",
-    defaultLanguage: "",
+    defaultLanguage: "en - Anglais",
     listeLanguages: {},
     profilePic: "",
     error: "",
@@ -141,7 +141,7 @@ class Signup extends Component {
               value={this.state.password}
               onChange={this.handleChange}
               required="true"
-              pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,15}"
+              // pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,15}"
             />
 
             <b
