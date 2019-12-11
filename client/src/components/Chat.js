@@ -189,7 +189,153 @@ class Chat extends Component {
   render() {
     console.log(this.state);
     return (
+      
       <Container>
+      <Row
+        className="mt-4"
+        style={{
+          height: "550px"
+        }}
+      >
+        <Col xs={3} className="bg-light">
+          <Container>
+            <h2>Users</h2>
+            <form onSubmit={this.searchUsers}>
+              <input
+                type="text"
+                name="search"
+                id="search"
+                value={this.state.search}
+                onChange={this.handleChange}
+              />
+              <button className="btn btn-light ml-4" type="submit">
+                Search
+              </button>
+            </form>
+
+            {this.state.users.map(user => {
+              if (
+                this.state.onlineUsers
+                  .map(x => {
+                    return x && x._id;
+                  })
+                  .includes(user._id)
+              ) {
+                return (
+                  <Col key={user._id}>
+                    <Button
+                      className="bg-success  m-2"
+                      onClick={() => this.joinPrivate(user)}
+                    >
+                      {user.username}
+                    </Button>
+                  </Col>
+                );
+              } else {
+                return (
+                  <Col key={user._id}>
+                    <Button
+                      className="bg-danger  m-2"
+                      onClick={() => this.joinPrivate(user)}
+                    >
+                      {user.username}
+                    </Button>
+                  </Col>
+                );
+              }
+            })}
+          </Container>
+        </Col>
+        <Col xs={6} id="chat" className="received_msg">
+        
+          <ScrollToBottom className="messages">
+            {this.state.messages.map(msg => {
+              return (
+                <Message className="received_msg" user={this.state.user} msg={msg} key={msg._id} />
+              );
+            })}
+          </ScrollToBottom>
+
+          <form onSubmit={this.handleSubmit}>
+          <i class="fa fa-chevron-down expand-button" aria-hidden="true"></i>
+            <Form.Group controlId="exampleForm.ControlSelect1">
+              <Form.Label style={{ fontWeight: "500" }}>
+                Select you language
+              </Form.Label>
+
+              
+              <div >
+              <div class="input_msg_write">
+              <Form.Control
+                as="select"
+                className="write_msg"
+                value={this.state.defaultLanguage}
+                onChange={this.handleChange}
+                name="defaultLanguage"
+              >
+                {Object.entries(this.state.listeLanguages).map(country => {
+                  return (
+                    <option key={country[0]}>
+                      {" "}
+                      {country[0]} - {country[1].name}{" "}
+                    </option>
+                  );
+                })}
+              </Form.Control>
+              </div>
+              
+              </div>
+            </Form.Group>
+
+            <button className="btn btn-light ml-4" type="submit">
+              Change language
+            </button>
+          </form>
+
+          <form onSubmit={this.sendMessage}>
+          
+          <div class="type_msg">
+              <div class="input_msg_write">
+              <button className="btn btn-light ml-4" type="submit">
+              <i class="language big icon" aria-hidden="true"></i>
+            </button>
+            <input
+              type="text"
+              className="write_msg"
+              name="message"
+              id="message"
+              value={this.state.message}
+              onChange={this.handleChange}
+            />
+
+            <button className="btn btn-light ml-4" type="submit">
+              Send
+            </button>
+            </div>
+            </div>
+          </form>
+
+          
+        </Col>
+        <Users rooms={this.state.rooms} joinRoom={this.joinRoom} />
+      </Row>
+      <script>
+              
+            </script>
+    </Container>
+            
+            
+      
+    );
+  }
+}
+
+export default Chat;
+
+
+
+
+{/* <Container>
         <Row
           className="mt-4"
           style={{
@@ -298,9 +444,4 @@ class Chat extends Component {
           </Col>
           <Users rooms={this.state.rooms} joinRoom={this.joinRoom} />
         </Row>
-      </Container>
-    );
-  }
-}
-
-export default Chat;
+      </Container> */}

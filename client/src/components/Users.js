@@ -10,6 +10,7 @@ class Users extends Component {
       <Col xs={3} className="bg-secondary">
         <h2>Conversations</h2>
         {this.props.rooms.map(room => {
+          
           return (
             <Col key={room._id}>
               <Button onClick={() => this.props.joinRoom(room)}>
