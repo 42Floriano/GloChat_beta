@@ -191,6 +191,7 @@ class Chat extends Component {
   };
 
   render() {
+
     return (
       <div class="messaging">
         <div class="inbox_msg">
@@ -242,6 +243,7 @@ class Chat extends Component {
                       );
                     }
                   })}
+
                 </div>
               </div>
             </div>
@@ -255,72 +257,82 @@ class Chat extends Component {
               />
             </div>
           </div>
-          <div class="mesgs">
 
+          <Col xs={6} id="chat" className="received_msg">
+        
+          <ScrollToBottom className="messages">
+            {this.state.messages.map(msg => {
+              console.log("LOOOOOOOK AT ME AHhhhhHHHHHHHHHHHHHHHHHHHHHHH  ",msg);
+              return (
+                <Message className="received_msg" user={this.state.user} msg={msg} key={msg._id}  />
+              );
+            })}
+          </ScrollToBottom>
 
-            <div class="msg_history">
-              <div class="incoming_msg">
-                <div class="incoming_msg_img">
-                  {" "}
-                  <img
-                    src="https://ptetutorials.com/images/user-profile.png"
-                    alt="sunil"
-                  />{" "}
-                </div>
-                <div class="received_msg">
-                  <div class="received_withd_msg">
-                    <p>Test which is a new approach to have all solutions</p>
-                    <span class="time_date"> 11:01 AM | June 9</span>
-                  </div>
-                </div>
+          <form onSubmit={this.handleSubmit}>
+          <i class="fa fa-chevron-down expand-button" aria-hidden="true"></i>
+            <Form.Group controlId="exampleForm.ControlSelect1">
+              <Form.Label style={{ fontWeight: "500" }}>
+                Select you language
+              </Form.Label>
+
+              
+              <div >
+              <div class="input_msg_write">
+              <Form.Control
+                as="select"
+                className="write_msg"
+                value={this.state.defaultLanguage}
+                onChange={this.handleChange}
+                name="defaultLanguage"
+              >
+                {Object.entries(this.state.listeLanguages).map(country => {
+                  return (
+                    <option key={country[0]}>
+                      {" "}
+                      {country[0]} - {country[1].name}{" "}
+                    </option>
+                  );
+                })}
+              </Form.Control>
               </div>
-              <div class="outgoing_msg">
-                <div class="sent_msg">
-                  <p>Test which is a new approach to have all solutions</p>
-                  <span class="time_date"> 11:01 AM | June 9</span>{" "}
-                </div>
+              
               </div>
-              <div class="incoming_msg">
-                <div class="incoming_msg_img">
-                  {" "}
-                  <img
-                    src="https://ptetutorials.com/images/user-profile.png"
-                    alt="sunil"
-                  />{" "}
-                </div>
-                <div class="received_msg">
-                  <div class="received_withd_msg">
-                    <p>Test, which is a new approach to have</p>
-                    <span class="time_date"> 11:01 AM | Yesterday</span>
-                  </div>
-                </div>
-              </div>
-              <div class="outgoing_msg">
-                <div class="sent_msg">
-                  <p>Apollo University, Delhi, India Test</p>
-                  <span class="time_date"> 11:01 AM | Today</span>{" "}
-                </div>
-              </div>
-              <div class="incoming_msg">
-                <div class="incoming_msg_img">
-                  {" "}
-                  <img
-                    src="https://ptetutorials.com/images/user-profile.png"
-                    alt="sunil"
-                  />{" "}
-                </div>
-                <div class="received_msg">
-                  <div class="received_withd_msg">
-                    <p>
-                      We work directly with our designers and suppliers, and
-                      sell direct to you, which means quality, exclusive
-                      products, at a price anyone can afford.
-                    </p>
-                    <span class="time_date"> 11:01 AM | Today</span>
-                  </div>
-                </div>
-              </div>
+            </Form.Group>
+
+            <button className="btn btn-light ml-4" type="submit">
+              Change language
+            </button>
+          </form>
+
+          <form onSubmit={this.sendMessage}>
+          
+          <div class="type_msg">
+              <div class="input_msg_write">
+              <button className="btn btn-light ml-4" type="submit">
+              <i class="language big icon" aria-hidden="true"></i>
+            </button>
+            <input
+              type="text"
+              className="write_msg"
+              name="message"
+              id="message"
+              value={this.state.message}
+              onChange={this.handleChange}
+            />
+
+            <button className="btn btn-light ml-4" type="submit">
+              Send
+            </button>
             </div>
+            </div>
+          </form>
+
+          
+        </Col>
+
+        
+          
             <div class="type_msg">
               <div class="input_msg_write">
                 <input
@@ -336,14 +348,14 @@ class Chat extends Component {
           </div>
         </div>
         
-      </div>
+      
     );
   }
 }
 
 export default Chat;
 
-{
+
   /* <Container>
   <Row
     className="mt-4"
@@ -453,4 +465,4 @@ export default Chat;
     </Col>
   </Row>
 </Container>;  */
-}
+
