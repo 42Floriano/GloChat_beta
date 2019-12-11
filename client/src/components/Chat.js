@@ -185,6 +185,7 @@ class Chat extends Component {
                   Search
                 </button>
               </form>
+
               {this.state.users.map(user => {
                 if (
                   this.state.onlineUsers

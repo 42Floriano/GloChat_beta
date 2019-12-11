@@ -152,12 +152,12 @@ io.on("connection", socket => {
     // }
     Room.find({ users: { $all: [user1._id, user2._id] } })
       .then(room => {
-        const user2SocketId = getUserSocket(user2);
+        //const user2SocketId = getUserSocket(user2);
 
         if (room.length > 0) {
           socket.emit("room", room);
-          console.log(user2SocketId);
-          io.to(`${user2SocketId}`).emit("room", room);
+          //console.log(user2SocketId);
+          //io.to(`${user2SocketId}`).emit("room", room);
         } else {
           Room.create({ users: [user1._id, user2._id] }).then(newRoom => {
             User.findOneAndUpdate(
