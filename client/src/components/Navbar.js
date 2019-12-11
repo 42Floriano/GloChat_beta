@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Navbar, Nav } from "react-bootstrap";
+import { Navbar, Nav, Container } from "react-bootstrap";
 import axios from "axios";
 
 const NavBar = props => {
@@ -11,7 +11,7 @@ const NavBar = props => {
 
   return (
     <Navbar
-      className="nav justify-content-end  d-flex "
+      className="nav justify-content-end d-flex "
       style={{
         backgroundColor: "#4056a1"
       }}

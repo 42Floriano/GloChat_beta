@@ -34,8 +34,9 @@ body {
   border-radius: 50%;
 } */
 
-.container {
-  max-width: 900px;
+.container-chat {
+  max-width: 90vw;
+  margin: 10px auto;
 }
 .inbox_people {
   background: #fff;
@@ -47,7 +48,7 @@ body {
 
 .inbox_msg {
   border: 1px solid #ddd;
-  clear: both;
+
   overflow: hidden;
 }
 
@@ -63,7 +64,7 @@ body {
 .srch_bar {
   display: inline-block;
   text-align: right;
-  width: 60%;
+  width: 100%;
 }
 
 .headind_srch {
@@ -81,6 +82,7 @@ body {
 
 .srch_bar input {
   outline: none;
+  font-size: 16px;
   border: 1px solid #cdcdcd;
   border-width: 0 0 1px 0;
   width: 80%;
@@ -101,7 +103,7 @@ body {
 }
 
 .chat_ib h5 {
-  font-size: 18px;
+  font-size: 15px;
   color: #464646;
   margin: 0 0 8px 0;
 }
@@ -128,7 +130,6 @@ body {
 
 .chat_img img {
   width: 100%;
-  border-radius: 50%;
 }
 
 .chat_ib {
@@ -250,7 +251,7 @@ body {
 }
 
 .messaging {
-  padding: 0 0 50px 0;
+  height: 90%;
 }
 
 .msg_history {
@@ -259,6 +260,12 @@ body {
 }
 
 .dot {
-  width: 10px;
+  width: 15px;
+  height: 15px;
   margin-left: 10px;
+}
+
+.searchedUser {
+  width: 300px;
+  margin: 10px;
 }

@@ -192,143 +192,172 @@ class Chat extends Component {
 
   render() {
     return (
-      <div class="messaging">
-        <div class="inbox_msg">
-          <div class="inbox_people">
-            <div class="headind_srch">
-              <div class="recent_heading"></div>
-              <div class="srch_bar">
-                <div class="stylish-input-group">
-                  <form onSubmit={this.searchUsers}>
-                    <input
-                      class="search-bar"
-                      placeholder="Search"
-                      type="text"
-                      name="search"
-                      id="search"
-                      value={this.state.search}
-                      onChange={this.handleChange}
-                    />
-                  </form>
+      <div className="container-chat">
+        <div className="messaging">
+          <div className="inbox_msg">
+            <div className="inbox_people">
+              <div className="headind_srch">
+                <div className="recent_heading"></div>
+                <div className="srch_bar">
+                  <div className="stylish-input-group">
+                    <form onSubmit={this.searchUsers}>
+                      <input
+                        className="search-bar"
+                        placeholder="Search"
+                        type="text"
+                        name="search"
+                        id="search"
+                        value={this.state.search}
+                        onChange={this.handleChange}
+                      />
+                    </form>
 
-                  {this.state.users.map(user => {
-                    if (
-                      this.state.onlineUsers
-                        .map(x => {
-                          return x && x._id;
-                        })
-                        .includes(user._id)
-                    ) {
-                      return (
-                        <Col key={user._id}>
-                          <Button
-                            className="bg-success  m-2"
+                    {this.state.users.map(user => {
+                      if (
+                        this.state.onlineUsers
+                          .map(x => {
+                            return x && x._id;
+                          })
+                          .includes(user._id)
+                      ) {
+                        return (
+                          <a
+                            classNameName="searchedUser"
                             onClick={() => this.joinPrivate(user)}
                           >
-                            {user.username}
-                          </Button>
-                        </Col>
-                      );
-                    } else {
-                      return (
-                        <Col key={user._id}>
-                          <Button
-                            className="bg-danger  m-2"
+                            <div
+                              key={user._id}
+                              className="chat_list list-group-item list-group-item-action"
+                            >
+                              <div className="chat_people">
+                                <div className="chat_img">
+                                  <img src={user.profilePic} alt="user" />
+                                </div>
+                                <div className="chat_ib">
+                                  <h5>
+                                    {user.username}
+
+                                    <img className="dot" src="green-dot.png" />
+                                  </h5>
+                                </div>
+                              </div>
+                            </div>
+                          </a>
+                        );
+                      } else {
+                        return (
+                          <a
+                            className="searchedUser"
                             onClick={() => this.joinPrivate(user)}
                           >
-                            {user.username}
-                          </Button>
-                        </Col>
-                      );
-                    }
-                  })}
-                </div>
-              </div>
-            </div>
-            <div class="inbox_chat scroll">
-              <Users
-                user={this.state.user}
-                rooms={this.state.rooms}
-                users={this.state.users}
-                onlineUsers={this.state.onlineUsers}
-                joinRoom={this.joinRoom}
-              />
-            </div>
-          </div>
-          <div class="mesgs">
-            <div class="msg_history">
-              <div class="incoming_msg">
-                <div class="incoming_msg_img">
-                  {" "}
-                  <img
-                    src="https://ptetutorials.com/images/user-profile.png"
-                    alt="sunil"
-                  />{" "}
-                </div>
-                <div class="received_msg">
-                  <div class="received_withd_msg">
-                    <p>Test which is a new approach to have all solutions</p>
-                    <span class="time_date"> 11:01 AM | June 9</span>
+                            <div
+                              key={user._id}
+                              className="chat_list list-group-item list-group-item-action"
+                            >
+                              <div className="chat_people">
+                                <div className="chat_img">
+                                  <img src={user.profilePic} alt="user" />
+                                </div>
+                                <div className="chat_ib">
+                                  <h5>
+                                    {user.username}
+
+                                    <img className="dot" src="red-dot.png" />
+                                  </h5>
+                                </div>
+                              </div>
+                            </div>
+                          </a>
+                        );
+                      }
+                    })}
                   </div>
                 </div>
               </div>
-              <div class="outgoing_msg">
-                <div class="sent_msg">
-                  <p>Test which is a new approach to have all solutions</p>
-                  <span class="time_date"> 11:01 AM | June 9</span>{" "}
-                </div>
-              </div>
-              <div class="incoming_msg">
-                <div class="incoming_msg_img">
-                  {" "}
-                  <img
-                    src="https://ptetutorials.com/images/user-profile.png"
-                    alt="sunil"
-                  />{" "}
-                </div>
-                <div class="received_msg">
-                  <div class="received_withd_msg">
-                    <p>Test, which is a new approach to have</p>
-                    <span class="time_date"> 11:01 AM | Yesterday</span>
-                  </div>
-                </div>
-              </div>
-              <div class="outgoing_msg">
-                <div class="sent_msg">
-                  <p>Apollo University, Delhi, India Test</p>
-                  <span class="time_date"> 11:01 AM | Today</span>{" "}
-                </div>
-              </div>
-              <div class="incoming_msg">
-                <div class="incoming_msg_img">
-                  {" "}
-                  <img
-                    src="https://ptetutorials.com/images/user-profile.png"
-                    alt="sunil"
-                  />{" "}
-                </div>
-                <div class="received_msg">
-                  <div class="received_withd_msg">
-                    <p>
-                      We work directly with our designers and suppliers, and
-                      sell direct to you, which means quality, exclusive
-                      products, at a price anyone can afford.
-                    </p>
-                    <span class="time_date"> 11:01 AM | Today</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="type_msg">
-              <div class="input_msg_write">
-                <input
-                  type="text"
-                  class="write_msg"
-                  placeholder="Type a message"
+              <div className="inbox_chat scroll">
+                <Users
+                  user={this.state.user}
+                  rooms={this.state.rooms}
+                  users={this.state.users}
+                  onlineUsers={this.state.onlineUsers}
+                  joinRoom={this.joinRoom}
                 />
-                <button class="msg_send_btn" type="button">
-                  <i class="fa fa-paper-plane" aria-hidden="true"></i>
-                </button>
+              </div>
+            </div>
+            <div className="mesgs">
+              <div className="msg_history">
+                <div className="incoming_msg">
+                  <div className="incoming_msg_img">
+                    <img
+                      src="https://ptetutorials.com/images/user-profile.png"
+                      alt="sunil"
+                    />{" "}
+                  </div>
+                  <div className="received_msg">
+                    <div className="received_withd_msg">
+                      <p>Test which is a new approach to have all solutions</p>
+                      <span className="time_date"> 11:01 AM | June 9</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="outgoing_msg">
+                  <div className="sent_msg">
+                    <p>Test which is a new approach to have all solutions</p>
+                    <span className="time_date"> 11:01 AM | June 9</span>{" "}
+                  </div>
+                </div>
+                <div className="incoming_msg">
+                  <div className="incoming_msg_img">
+                    {" "}
+                    <img
+                      src="https://ptetutorials.com/images/user-profile.png"
+                      alt="sunil"
+                    />{" "}
+                  </div>
+                  <div className="received_msg">
+                    <div className="received_withd_msg">
+                      <p>Test, which is a new approach to have</p>
+                      <span className="time_date"> 11:01 AM | Yesterday</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="outgoing_msg">
+                  <div className="sent_msg">
+                    <p>Apollo University, Delhi, India Test</p>
+                    <span className="time_date"> 11:01 AM | Today</span>{" "}
+                  </div>
+                </div>
+                <div className="incoming_msg">
+                  <div className="incoming_msg_img">
+                    {" "}
+                    <img
+                      src="https://ptetutorials.com/images/user-profile.png"
+                      alt="sunil"
+                    />{" "}
+                  </div>
+                  <div className="received_msg">
+                    <div className="received_withd_msg">
+                      <p>
+                        We work directly with our designers and suppliers, and
+                        sell direct to you, which means quality, exclusive
+                        products, at a price anyone can afford.
+                      </p>
+                      <span className="time_date"> 11:01 AM | Today</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="type_msg">
+                <div className="input_msg_write">
+                  <input
+                    type="text"
+                    className="write_msg"
+                    placeholder="Type a message"
+                  />
+                  <button className="msg_send_btn" type="button">
+                    <i className="fa fa-paper-plane" aria-hidden="true"></i>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
