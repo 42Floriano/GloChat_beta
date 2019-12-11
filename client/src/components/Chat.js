@@ -79,9 +79,35 @@ class Chat extends Component {
   };
 
   handleChange = event => {
-    this.setState({
-      [event.target.name]: event.target.value
-    });
+    this.setState(
+      {
+        [event.target.name]: event.target.value
+      },
+      () => console.log(this.state.defaultLanguage)
+    );
+  };
+
+  handleSubmit = event => {
+    event.preventDefault();
+    // console.log(this.state.defaultLanguage);
+    // console.log(this.state.user._id);
+    // console.log(this.state.user.);
+    axios
+      .post("/auth/updateLang", {
+        id: this.state.user._id,
+        defaultLanguage: this.state.defaultLanguage
+      })
+      .then(response => {
+        console.log("LOOOOOOOOOOOOOOOOK", this.state.defaultLanguage);
+        console.log(response.data);
+      })
+      .catch(err => {
+        if (err.response.data.message) {
+          this.setState({
+            error: err.response.data.message
+          });
+        }
+      });
   };
 
   searchUsers = event => {
@@ -237,6 +263,12 @@ class Chat extends Component {
                 onChange={this.handleChange}
               />
 
+              <button className="btn btn-light ml-4" type="submit">
+                Send
+              </button>
+            </form>
+
+            <form onSubmit={this.handleSubmit}>
               <Form.Group controlId="exampleForm.ControlSelect1">
                 <Form.Label style={{ fontWeight: "500" }}>
                   Select your language
@@ -260,7 +292,7 @@ class Chat extends Component {
               </Form.Group>
 
               <button className="btn btn-light ml-4" type="submit">
-                Send
+                Change language
               </button>
             </form>
           </Col>
