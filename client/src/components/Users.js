@@ -7,60 +7,82 @@ class Users extends Component {
 
   render() {
     return (
-      <Col xs={3} className="bg-secondary">
-        <h2>Conversations</h2>
+      <>
         {this.props.rooms.map(room => {
-          return (
-            <Col key={room._id}>
-              <Button onClick={() => this.props.joinRoom(room)}>
-                {room.users.map(user => `${user.username} `)}
-              </Button>
-            </Col>
-          );
+          if (
+            this.props.onlineUsers
+              .map(x => {
+                return x && x._id;
+              })
+              .includes(room.users[1]._id)
+          ) {
+            return (
+              <a onClick={() => this.props.joinRoom(room)}>
+                <div
+                  key={room._id}
+                  class="chat_list list-group-item list-group-item-action"
+                >
+                  <div class="chat_people">
+                    <div class="chat_img">
+                      <img src={room.users[1].profilePic} alt="user" />
+                    </div>
+                    <div class="chat_ib">
+                      <h5>
+                        {this.props.user._id === room.users[0]._id
+                          ? room.users[1].username
+                          : room.users[0].username}
+
+                        <img className="dot" src="green-dot.png" />
+
+                        <span class="chat_date">Dec 25</span>
+                      </h5>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            );
+          } else {
+            return (
+              <a onClick={() => this.props.joinRoom(room)}>
+                <div
+                  key={room._id}
+                  class="chat_list list-group-item list-group-item-action"
+                >
+                  <div class="chat_people">
+                    <div class="chat_img">
+                      <img src={room.users[0].profilePic} alt="user" />
+                    </div>
+                    <div class="chat_ib">
+                      <h5>
+                        {this.props.user._id === room.users[0]._id
+                          ? room.users[1].username
+                          : room.users[0].username}
+
+                        <img className="dot" src="red-dot.png" />
+
+                        <span class="chat_date">Dec 25</span>
+                      </h5>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            );
+          }
+
+          // <div
+          //   key={room._id}
+          //   className="conversation list-group-item list-group-item-action"
+          // >
+          //   <img src={room.users[1].profilePic} />
+          //   <span> {room.users[1].username}</span>
+          //   <Button onClick={() => this.props.joinRoom(room)}>
+          //     {/* {room.users.map(user => `${user.username} `)} */}
+          //   </Button>
+          // </div>
         })}
-      </Col>
+      </>
     );
   }
 }
 
 export default Users;
-
-{
-  /* <React.Fragment>
-<Table>
-  <thead>
-    <tr>
-      <th>UserName</th>
-      <th>Flag</th>
-      <th>City</th>
-      <th />
-    </tr>
-  </thead>
-  <tbody>
-    {this.props.users.map((user, index) => {
-      // if (user._id !== this.props.user._id) {
-      return (
-        <tr key={index}>
-          <td>{user.username}</td>
-          <td>
-            <img
-              src={this.getCountyFlag(user.connection.countryCode)}
-              alt="flag"
-            />
-          </td>
-          <td>{user.connection.city}</td>
-          <td>
-            <Button onClick={() => this.props.toPrivate(user)}>
-              <Link className="text-white" to={`/`}>
-                Chat
-              </Link>
-            </Button>
-          </td>
-        </tr>
-      );
-      //}
-    })}
-  </tbody>
-</Table>
-</React.Fragment> */
-}

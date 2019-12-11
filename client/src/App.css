@@ -1,9 +1,3 @@
-.messages {
-  padding: 5% 0;
-  overflow: auto;
-  flex: auto;
-}
-
 #chatInput {
   width: 95%;
   position: absolute;

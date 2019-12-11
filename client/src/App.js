@@ -1,12 +1,10 @@
 import React, { Component } from "react";
-import "./App.css";
 import { Route } from "react-router-dom";
 import NavBar from "./components/Navbar";
 import Home from "./components/Home";
 import Signup from "./components/Signup";
 import Login from "./components/Login";
 import Chat from "./components/Chat";
-//import ChatTest from "./components/ChatTest";
 import Settings from "./components/Settings";
 import About from "./components/About";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -50,13 +48,13 @@ class App extends Component {
             <Signup user={this.state.user} setUser={this.setUser} {...props} />
           )}
         />
-        {/* <Route
+        <Route
           exact
           path="/auth/google"
           render={props => (
             <Signup user={this.state.user} setUser={this.setUser} {...props} />
           )}
-        /> */}
+        />
         <Route
           exact
           path="/settings"
@@ -64,8 +62,6 @@ class App extends Component {
           component={Settings}
         />
         <Route exact path="/about" setUser={this.setUser} component={About} />
-
-        {/* <Route exact path="/chat" component={ChatTest} /> */}
       </div>
     );
   }

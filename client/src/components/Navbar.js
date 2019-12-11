@@ -13,7 +13,7 @@ const NavBar = props => {
     <Navbar
       className="nav justify-content-end  d-flex "
       style={{
-        backgroundColor: "#0E4D92"
+        backgroundColor: "#4056a1"
       }}
     >
       <Navbar.Brand>
