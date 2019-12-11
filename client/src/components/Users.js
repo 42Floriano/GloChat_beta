@@ -1,4 +1,4 @@
-import React, { Component } from "react";  
+import React, { Component } from "react";
 import { Button, Col } from "react-bootstrap";
 
 class Users extends Component {
@@ -20,22 +20,21 @@ class Users extends Component {
               <a onClick={() => this.props.joinRoom(room)}>
                 <div
                   key={room._id}
-                  class="chat_list list-group-item list-group-item-action"
+                  className="chat_list list-group-item list-group-item-action"
                 >
-                  <div class="chat_people">
-                    <div class="chat_img">
-                      <img src={room.users[1].profilePic} alt="user" />
-                    </div>
-                    <div class="chat_ib">
+                  <div className="chat_people">
+                    <div className="chat_ib">
+                      <div className="chat_img">
+                        <img src={room.users[1].profilePic} alt="user" />
+                      </div>
+
                       <h5>
                         {this.props.user._id === room.users[0]._id
                           ? room.users[1].username
                           : room.users[0].username}
-
-                        <img className="dot" src="green-dot.png" />
-
-                        <span class="chat_date">Dec 25</span>
                       </h5>
+
+                      <img classNameName="dot" src="green-dot.png" />
                     </div>
                   </div>
                 </div>
@@ -46,21 +45,19 @@ class Users extends Component {
               <a onClick={() => this.props.joinRoom(room)}>
                 <div
                   key={room._id}
-                  class="chat_list list-group-item list-group-item-action"
+                  className="chat_list list-group-item list-group-item-action"
                 >
-                  <div class="chat_people">
-                    <div class="chat_img">
-                      <img src={room.users[0].profilePic} alt="user" />
-                    </div>
-                    <div class="chat_ib">
+                  <div className="chat_people">
+                    <div className="chat_ib">
+                      <div className="chat_img">
+                        <img src={room.users[0].profilePic} alt="user" />
+                      </div>
                       <h5>
                         {this.props.user._id === room.users[0]._id
                           ? room.users[1].username
                           : room.users[0].username}
 
                         <img className="dot" src="red-dot.png" />
-
-                        <span class="chat_date">Dec 25</span>
                       </h5>
                     </div>
                   </div>

@@ -191,60 +191,97 @@ class Chat extends Component {
   };
 
   render() {
-
     return (
-      <div class="messaging">
-        <div class="inbox_msg">
-          <div class="inbox_people">
-            <div class="headind_srch">
-              <div class="recent_heading"></div>
-              <div class="srch_bar">
-                <div class="stylish-input-group">
-                  <form onSubmit={this.searchUsers}>
-                    <input
-                      class="search-bar"
-                      placeholder="Search"
-                      type="text"
-                      name="search"
-                      id="search"
-                      value={this.state.search}
-                      onChange={this.handleChange}
-                    />
-                  </form>
+      <div className="container-chat">
+        <div className="messaging">
+          <div className="inbox_msg">
+            <div className="inbox_people">
+              <div className="headind_srch">
+                <div className="recent_heading"></div>
+                <div className="srch_bar">
+                  <div className="stylish-input-group">
+                    <form onSubmit={this.searchUsers}>
+                      <input
+                        className="search-bar"
+                        placeholder="Search"
+                        type="text"
+                        name="search"
+                        id="search"
+                        value={this.state.search}
+                        onChange={this.handleChange}
+                      />
+                    </form>
 
-                  {this.state.users.map(user => {
-                    if (
-                      this.state.onlineUsers
-                        .map(x => {
-                          return x && x._id;
-                        })
-                        .includes(user._id)
-                    ) {
-                      return (
-                        <Col key={user._id}>
-                          <Button
-                            className="bg-success  m-2"
+                    {this.state.users.map(user => {
+                      if (
+                        this.state.onlineUsers
+                          .map(x => {
+                            return x && x._id;
+                          })
+                          .includes(user._id)
+                      ) {
+                        return (
+                          <a
+                            classNameName="searchedUser"
                             onClick={() => this.joinPrivate(user)}
                           >
-                            {user.username}
-                          </Button>
-                        </Col>
-                      );
-                    } else {
-                      return (
-                        <Col key={user._id}>
-                          <Button
-                            className="bg-danger  m-2"
+                            <div
+                              key={user._id}
+                              className="chat_list list-group-item list-group-item-action"
+                            >
+                              <div className="chat_people">
+                                <div className="chat_img">
+                                  <img src={user.profilePic} alt="user" />
+                                </div>
+                                <div className="chat_ib">
+                                  <h5>
+                                    {user.username}
+
+                                    <img className="dot" src="green-dot.png" />
+                                  </h5>
+                                </div>
+                              </div>
+                            </div>
+                          </a>
+                        );
+                      } else {
+                        return (
+                          <a
+                            className="searchedUser"
                             onClick={() => this.joinPrivate(user)}
                           >
-                            {user.username}
-                          </Button>
-                        </Col>
-                      );
-                    }
-                  })}
+                            <div
+                              key={user._id}
+                              className="chat_list list-group-item list-group-item-action"
+                            >
+                              <div className="chat_people">
+                                <div className="chat_img">
+                                  <img src={user.profilePic} alt="user" />
+                                </div>
+                                <div className="chat_ib">
+                                  <h5>
+                                    {user.username}
 
+                                    <img className="dot" src="red-dot.png" />
+                                  </h5>
+                                </div>
+                              </div>
+                            </div>
+                          </a>
+                        );
+                      }
+                    })}
+                  </div>
                 </div>
+              </div>
+              <div className="inbox_chat scroll">
+                <Users
+                  user={this.state.user}
+                  rooms={this.state.rooms}
+                  users={this.state.users}
+                  onlineUsers={this.state.onlineUsers}
+                  joinRoom={this.joinRoom}
+                />
               </div>
             </div>
             <div class="inbox_chat scroll">
@@ -259,104 +296,106 @@ class Chat extends Component {
           </div>
 
           <Col xs={6} id="chat" className="received_msg">
-        
-          <ScrollToBottom className="messages">
-            {this.state.messages.map(msg => {
-              console.log("LOOOOOOOK AT ME AHhhhhHHHHHHHHHHHHHHHHHHHHHHH  ",msg);
-              return (
-                <Message className="received_msg" user={this.state.user} msg={msg} key={msg._id}  />
-              );
-            })}
-          </ScrollToBottom>
+            <ScrollToBottom className="messages">
+              {this.state.messages.map(msg => {
+                console.log(
+                  "LOOOOOOOK AT ME AHhhhhHHHHHHHHHHHHHHHHHHHHHHH  ",
+                  msg
+                );
+                return (
+                  <Message
+                    className="received_msg"
+                    user={this.state.user}
+                    msg={msg}
+                    key={msg._id}
+                  />
+                );
+              })}
+            </ScrollToBottom>
 
-          <form onSubmit={this.handleSubmit}>
-          <i class="fa fa-chevron-down expand-button" aria-hidden="true"></i>
-            <Form.Group controlId="exampleForm.ControlSelect1">
-              <Form.Label style={{ fontWeight: "500" }}>
-                Select you language
-              </Form.Label>
+            <form onSubmit={this.handleSubmit}>
+              <i
+                class="fa fa-chevron-down expand-button"
+                aria-hidden="true"
+              ></i>
+              <Form.Group controlId="exampleForm.ControlSelect1">
+                <Form.Label style={{ fontWeight: "500" }}>
+                  Select you language
+                </Form.Label>
 
-              
-              <div >
-              <div class="input_msg_write">
-              <Form.Control
-                as="select"
-                className="write_msg"
-                value={this.state.defaultLanguage}
-                onChange={this.handleChange}
-                name="defaultLanguage"
-              >
-                {Object.entries(this.state.listeLanguages).map(country => {
-                  return (
-                    <option key={country[0]}>
-                      {" "}
-                      {country[0]} - {country[1].name}{" "}
-                    </option>
-                  );
-                })}
-              </Form.Control>
-              </div>
-              
-              </div>
-            </Form.Group>
+                <div>
+                  <div class="input_msg_write">
+                    <Form.Control
+                      as="select"
+                      className="write_msg"
+                      value={this.state.defaultLanguage}
+                      onChange={this.handleChange}
+                      name="defaultLanguage"
+                    >
+                      {Object.entries(this.state.listeLanguages).map(
+                        country => {
+                          return (
+                            <option key={country[0]}>
+                              {" "}
+                              {country[0]} - {country[1].name}{" "}
+                            </option>
+                          );
+                        }
+                      )}
+                    </Form.Control>
+                  </div>
+                </div>
+              </Form.Group>
 
-            <button className="btn btn-light ml-4" type="submit">
-              Change language
-            </button>
-          </form>
-
-          <form onSubmit={this.sendMessage}>
-          
-          <div class="type_msg">
-              <div class="input_msg_write">
               <button className="btn btn-light ml-4" type="submit">
-              <i class="language big icon" aria-hidden="true"></i>
-            </button>
-            <input
-              type="text"
-              className="write_msg"
-              name="message"
-              id="message"
-              value={this.state.message}
-              onChange={this.handleChange}
-            />
+                Change language
+              </button>
+            </form>
 
-            <button className="btn btn-light ml-4" type="submit">
-              Send
-            </button>
-            </div>
-            </div>
-          </form>
+            <form onSubmit={this.sendMessage}>
+              <div class="type_msg">
+                <div class="input_msg_write">
+                  <button className="btn btn-light ml-4" type="submit">
+                    <i class="language big icon" aria-hidden="true"></i>
+                  </button>
+                  <input
+                    type="text"
+                    className="write_msg"
+                    name="message"
+                    id="message"
+                    value={this.state.message}
+                    onChange={this.handleChange}
+                  />
 
-          
-        </Col>
-
-        
-          
-            <div class="type_msg">
-              <div class="input_msg_write">
-                <input
-                  type="text"
-                  class="write_msg"
-                  placeholder="Type a message"
-                />
-                <button class="msg_send_btn" type="button">
-                  <i class="fa fa-paper-plane" aria-hidden="true"></i>
-                </button>
+                  <button className="btn btn-light ml-4" type="submit">
+                    Send
+                  </button>
+                </div>
               </div>
+            </form>
+          </Col>
+
+          <div class="type_msg">
+            <div class="input_msg_write">
+              <input
+                type="text"
+                class="write_msg"
+                placeholder="Type a message"
+              />
+              <button class="msg_send_btn" type="button">
+                <i class="fa fa-paper-plane" aria-hidden="true"></i>
+              </button>
             </div>
           </div>
         </div>
-        
-      
+      </div>
     );
   }
 }
 
 export default Chat;
 
-
-  /* <Container>
+/* <Container>
   <Row
     className="mt-4"
     style={{
@@ -465,4 +504,3 @@ export default Chat;
     </Col>
   </Row>
 </Container>;  */
-
