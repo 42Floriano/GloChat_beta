@@ -24,12 +24,8 @@
     "multer": "^1.4.2",
     "multer-storage-cloudinary": "^2.2.1",
     "node-sass-middleware": "^0.11.0",
-<<<<<<< HEAD
     "passport": "^0.4.0",
     "passport-google-oauth": "^2.0.0",
-=======
-    "passport": "^0.4.1",
->>>>>>> 0fa077d9896300fc1cc9ab32d6ba059f98c367e3
     "passport-google-oauth20": "^2.0.0",
     "passport-local": "^1.0.0",
     "serve-favicon": "^2.5.0",

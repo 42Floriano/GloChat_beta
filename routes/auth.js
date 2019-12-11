@@ -5,8 +5,31 @@ const router = express.Router();
 const User = require("../models/User");
 const uploadCloud = require("../config/cloudinary");
 
+router.post("/updateLang", (req, res, next) => {
+  console.log(req.body.defaultLanguage);
+  console.log(req.body.id);
+  const lang = req.body.defaultLanguage;
+  const id = req.body.id;
+  console.log(id, lang);
+
+  User.findByIdAndUpdate(id, { defaultLanguage: lang }, function(err, result){
+    if(err){
+        console.log(err);
+    }
+    console.log("RESULT: " + result);
+    res.send('Done')
+});
+});
+
 router.post("/signup", uploadCloud.single("imagePath"), (req, res, next) => {
-  const { username, password, profilePic, bio, email, defaultLanguage } = req.body;
+  const {
+    username,
+    password,
+    profilePic,
+    bio,
+    email,
+    defaultLanguage
+  } = req.body;
   console.log(profilePic);
   const defaultUserImage =
     "https://res.cloudinary.com/djulje0nb/image/upload/v1575889852/glochat/dummy-profile-pic1_jltxbg.png";
