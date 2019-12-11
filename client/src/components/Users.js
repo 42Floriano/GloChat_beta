@@ -34,7 +34,7 @@ class Users extends Component {
                           : room.users[0].username}
                       </h5>
 
-                      <img classNameName="dot" src="green-dot.png" />
+                      <img className="dot" src="green-dot.png" />
                     </div>
                   </div>
                 </div>

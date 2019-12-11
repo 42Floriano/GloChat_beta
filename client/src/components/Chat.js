@@ -284,16 +284,9 @@ class Chat extends Component {
                 />
               </div>
             </div>
-            <div class="inbox_chat scroll">
-              <Users
-                user={this.state.user}
-                rooms={this.state.rooms}
-                users={this.state.users}
-                onlineUsers={this.state.onlineUsers}
-                joinRoom={this.joinRoom}
-              />
-            </div>
-          </div>
+            
+            
+          
 
           <Col xs={6} id="chat" className="received_msg">
             <ScrollToBottom className="messages">
@@ -388,6 +381,7 @@ class Chat extends Component {
             </div>
           </div>
         </div>
+      </div>
       </div>
     );
   }

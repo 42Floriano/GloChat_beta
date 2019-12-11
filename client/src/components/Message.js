@@ -21,7 +21,7 @@ const Message = props => {
           <div class="incoming_msg_img">
             {" "}
             <img
-              src="https://ptetutorials.com/images/user-profile.png"
+              src={user.profilePic}
               alt="sunil"
             />{" "}
           </div>
