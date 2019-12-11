@@ -256,6 +256,8 @@ class Chat extends Component {
             </div>
           </div>
           <div class="mesgs">
+
+
             <div class="msg_history">
               <div class="incoming_msg">
                 <div class="incoming_msg_img">
@@ -333,6 +335,7 @@ class Chat extends Component {
             </div>
           </div>
         </div>
+        
       </div>
     );
   }
