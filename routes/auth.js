@@ -1,11 +1,40 @@
 const express = require("express");
 const passport = require("passport");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const router = express.Router();
 const User = require("../models/User");
+const uploadCloud = require("../config/cloudinary");
 
-router.post("/signup", (req, res) => {
-  const { username, password } = req.body;
+router.post("/updateLang", (req, res, next) => {
+  console.log(req.body.defaultLanguage);
+  console.log(req.body.id);
+  const lang = req.body.defaultLanguage;
+  const id = req.body.id;
+  console.log(id, lang);
+
+  User.findByIdAndUpdate(id, { defaultLanguage: lang }, function(err, result) {
+    if (err) {
+      console.log(err);
+    }
+    console.log("RESULT: " + result);
+    res.send("Done");
+  });
+});
+
+router.post("/signup", uploadCloud.single("imagePath"), (req, res, next) => {
+  const {
+    username,
+    password,
+    profilePic,
+    bio,
+    email,
+    defaultLanguage
+  } = req.body;
+  console.log(profilePic);
+  const defaultUserImage =
+    "https://res.cloudinary.com/djulje0nb/image/upload/v1575889852/glochat/dummy-profile-pic1_jltxbg.png";
+
+  let imagePath = profilePic.length ? profilePic : defaultUserImage;
 
   if (!username) {
     return res.status(400).json({ message: "Username can't be empty" });
@@ -25,7 +54,14 @@ router.post("/signup", (req, res) => {
           return bcrypt.hash(password, salt);
         })
         .then(hash => {
-          return User.create({ username: username, password: hash });
+          return User.create({
+            username: username,
+            password: hash,
+            profilePic: imagePath,
+            defaultLanguage: defaultLanguage,
+            bio: bio,
+            email: email
+          });
         })
         .then(newUser => {
           req.login(newUser, err => {
@@ -38,7 +74,14 @@ router.post("/signup", (req, res) => {
       res.status(500).json(err);
     });
 });
-
+router.get("/google", passport.authenticate("google", { scope: ["profile"] }));
+router.get(
+  "/google/callback",
+  passport.authenticate("google", {
+    failureRedirect: "/auth/login",
+    successRedirect: process.env.SUCCESS_REDIRECT
+  })
+);
 router.post("/login", (req, res, next) => {
   passport.authenticate("local", (err, user) => {
     if (err) {
@@ -61,6 +104,29 @@ router.delete("/logout", (req, res) => {
 
 router.get("/loggedin", (req, res) => {
   res.json(req.user);
+});
+
+router.post("/changeDetails", (req, res) => {
+  const { password, bio, profilePic } = req.body;
+
+  bcrypt
+    .genSalt()
+    .then(salt => {
+      return bcrypt.hash(password, salt);
+    })
+    .then(hash => {
+      return User.findByIdAndUpdate(
+        { _id: req.user._id },
+        { password: hash, bio, profilePic },
+        { new: true }
+      );
+    })
+    .then(User => {
+      return res.json(User);
+    })
+    .catch(err => {
+      return res.status(500).json(err);
+    });
 });
 
 module.exports = router;

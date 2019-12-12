@@ -1,38 +1,91 @@
 #!/usr/bin/env node
 
-const http = require('http');
+const http = require("http");
+let app = require("../app");
 
-let app = require('../app');
+const util = require("util");
+const request = require("request");
+const requestPromise = util.promisify(request);
+const uuidv4 = require("uuid/v4");
+const dotenv = require("dotenv");
+dotenv.config();
 
-// catch 404 and render a not-found.hbs template
-app.use((req, res, next) => {
-  res.status(404);
-  res.render('not-found');
-});
+// ---------- get info in .env -------------
+
+let key_var = "TRANSLATOR_TEXT_SUBSCRIPTION_KEY";
+if (!process.env[key_var]) {
+  throw new Error(
+    "Please set/export the following environment variable: " + key_var
+  );
+}
+let subscriptionKey = process.env[key_var];
+let endpoint_var = "TRANSLATOR_TEXT_ENDPOINT";
+if (!process.env[endpoint_var]) {
+  throw new Error(
+    "Please set/export the following environment variable: " + endpoint_var
+  );
+}
+let endpoint = process.env[endpoint_var];
+
+// ------- async function due API delay -------------
+// @param text to translate & arr of languages to translate to
+// wait promise and return it
+
+// async function message(text, arr) {
+
+async function messageFromFrontEnd(text, lgTrans) {
+  lgTransCode = lgTrans.substr(0, lgTrans.indexOf(" "));
+  console.log(lgTransCode);
+  let message = {
+    method: "POST",
+    baseUrl: endpoint,
+    url: "translate",
+    qs: {
+      "api-version": "3.0",
+      to: lgTransCode
+    },
+    headers: {
+      "Ocp-Apim-Subscription-Key": subscriptionKey,
+      "Content-type": "application/json",
+      "X-ClientTraceId": uuidv4().toString()
+    },
+    body: [
+      {
+        text: text
+      }
+    ],
+    json: true
+  };
+
+  const response = await requestPromise(message);
+  const result = response.body;
+  return result;
+}
 
 app.use((err, req, res, next) => {
   // always log the error
-  console.error('ERROR', req.method, req.path, err);
+  console.error("ERROR", req.method, req.path, err);
 
   // only render if the error ocurred before sending the response
   if (!res.headersSent) {
     res.status(500);
-    res.render('error');
   }
 });
 
 let server = http.createServer(app);
 
-server.on('error', error => {
-  if (error.syscall !== 'listen') { throw error }
+server.on("error", error => {
+  if (error.syscall !== "listen") {
+    throw error;
+  }
 
   // handle specific listen errors with friendly messages
   switch (error.code) {
-    case 'EACCES':
+    case "EACCES":
       console.error(`Port ${process.env.PORT} requires elevated privileges`);
       process.exit(1);
       break;
-    case 'EADDRINUSE':
+    case "EADDRINUSE":
       console.error(`Port ${process.env.PORT} is already in use`);
       process.exit(1);
       break;
@@ -41,6 +94,115 @@ server.on('error', error => {
   }
 });
 
+const io = require("socket.io").listen(server);
+const Message = require("../models/Message");
+const Room = require("../models/Room");
+const User = require("../models/User");
+
 server.listen(process.env.PORT, () => {
   console.log(`Listening on http://localhost:${process.env.PORT}`);
+});
+
+const getUsers = () => {
+  let clients = io.sockets.clients().connected;
+  let sockets = Object.values(clients);
+  let users = sockets.map(s => s.user);
+  return users;
+};
+
+const emitUsers = () => {
+  io.emit("users", getUsers());
+};
+
+const getUserSocket = user => {
+  let clients = io.sockets.clients().connected;
+  let sockets = Object.values(clients);
+  let usersSockets = sockets.map(s => {
+    return { userId: s.user._id, socketId: s.id };
+  });
+  const socket = usersSockets.find(
+    el => el.userId.toString() === user._id.toString()
+  );
+  return socket.socketId;
+};
+
+io.on("connection", socket => {
+  console.log("Client connected", socket.id);
+
+  socket.on("new_user", user => {
+    socket.user = user;
+    emitUsers();
+  });
+
+  socket.on("joinRoom", ({ user, room }) => {
+    console.log(`User ${user.username} joined: ${room}`);
+    socket.join(room);
+  });
+
+  socket.on("joinPrivate", ({ user1, user2 }) => {
+    Room.find({ users: { $all: [user1._id, user2._id] } })
+      .then(room => {
+        if (room.length > 0) {
+          socket.emit("room", room);
+          if (getUserSocket(user2)) {
+            io.to(`${getUserSocket(user2)}`).emit("room", room);
+          }
+        } else {
+          Room.create({ users: [user1._id, user2._id] }).then(newRoom => {
+            User.findOneAndUpdate(
+              { _id: user1._id },
+              { $push: { rooms: newRoom._id } }
+            ).then(user => {
+              User.findOneAndUpdate(
+                { _id: user2._id },
+                { $push: { rooms: newRoom._id } }
+              ).then(() => {
+                io.emit("welcome", `Welcome`);
+                if (getUserSocket(user2)) {
+                  io.to(`${getUserSocket(user2)}`).emit("welcome", "Welcome");
+                }
+              });
+            });
+          });
+        }
+      })
+      .catch(err => console.log(err));
+  });
+
+  socket.on("message", ({ message, userId, username, roomId, socketId }) => {
+    console.log("USER ID, MESSAGE SENT    ", userId, typeof userId);
+    Room.findOne({ _id: roomId })
+      .populate("users")
+      .then(response => {
+        const [person] = response.users.filter(el => el._id != userId);
+
+        User.findById(person._id).then(async data => {
+          const lang = data.defaultLanguage;
+          const result = await messageFromFrontEnd(message, lang);
+          const newMessage = result[0].translations;
+          const newAndImprovedMessage = newMessage[0].text;
+
+          Message.create({
+            text: message,
+            translation: newAndImprovedMessage,
+            user: userId,
+            username: username
+          })
+            .then(message => {
+              console.log(message);
+              io.to(`${socketId}`).emit("message", message);
+              socket.to(roomId).broadcast.emit("message", message);
+              Room.findOneAndUpdate(
+                { _id: roomId },
+                { $push: { messages: message._id } }
+              ).then(room => {});
+            })
+            .catch(err => console.log(err));
+        });
+      });
+  });
+  socket.on("disconnect", function() {
+    emitUsers();
+    console.log("User disconnected");
+  });
 });
