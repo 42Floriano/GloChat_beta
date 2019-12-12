@@ -11,6 +11,7 @@ passport.use(
       callbackURL: process.env.CALLBACK_URL + "/auth/google/callback"
     },
     (accessToken, refreshToken, profile, done) => {
+      console.log("PROOOOFILE", profile)
       User.findOne({ googleId: profile.id })
         .then(user => {
           if (user) {
@@ -20,7 +21,9 @@ passport.use(
           } else {
             return User.create({
               googleId: profile.id,
-              username: profile.displayName
+              username: profile.displayName,
+              profilePic:profile.photos[0].value
+
             }).then(newUser => {
               done(null, newUser);
             });
