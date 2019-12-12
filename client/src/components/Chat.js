@@ -4,10 +4,13 @@ import io from "socket.io-client";
 import axios from "axios";
 import Message from "./Message";
 import Rooms from "./Rooms";
+require("dotenv").config();
 
-const endpoint = "http://localhost:5000";
+const endpoint = process.env.CALLBACK_URL;
 
 let socket = io(endpoint);
+
+let geoLoc = process.env.GEO_KEY;
 
 class Chat1 extends Component {
   state = {
