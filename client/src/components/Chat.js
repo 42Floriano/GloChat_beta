@@ -27,6 +27,10 @@ class Chat1 extends Component {
     defaultLanguage: this.props.user.defaultLanguage
   };
 
+  scrollToBottom = () => {
+    this.messagesEnd.scrollIntoView({ behavior: "smooth" });
+  };
+
   componentDidMount = () => {
     axios
       .get(
@@ -40,7 +44,7 @@ class Chat1 extends Component {
       .catch(err => console.log(err));
 
     axios
-      .get("/geo/") // https://ssl.geoplugin.net/json.gp?k=get a key "https://ssl.geoplugin.net/json.gp?k=549c11e3f31b9c30"
+      .get("/geo") // https://ssl.geoplugin.net/json.gp?k=get a key "https://ssl.geoplugin.net/json.gp?k=549c11e3f31b9c30"
       .then(resp => {
         const { country, region } = resp.data;
         console.log(resp.data);
@@ -81,11 +85,16 @@ class Chat1 extends Component {
         });
       })
       .catch(err => console.log(err));
+    this.scrollToBottom();
 
     socket.emit("disconnect");
 
     socket.off();
   };
+
+  componentDidUpdate() {
+    this.scrollToBottom();
+  }
 
   handleChange = event => {
     this.setState({
@@ -186,6 +195,7 @@ class Chat1 extends Component {
   };
 
   render() {
+    console.log(this.state.messages);
     return (
       <div className="chat-container">
         <div className="rooms-container">
@@ -219,7 +229,9 @@ class Chat1 extends Component {
         </div>
 
         <div className="messages-container">
-          <ScrollToBottom className="messages">
+          {/* <ScrollToBottom className="messages"> */}
+
+          <div className="messages">
             {this.state.messages.map(msg => {
               return (
                 <div>
@@ -227,7 +239,15 @@ class Chat1 extends Component {
                 </div>
               );
             })}
-          </ScrollToBottom>
+            <div
+            style={{ float: "left", clear: "both" }}
+            ref={el => {
+              this.messagesEnd = el;
+            }}
+          ></div>
+          </div>
+          
+          {/* </ScrollToBottom> */}
 
           <div>
             <form className="message-area" onSubmit={this.sendMessage}>
