@@ -207,12 +207,16 @@ class Chat1 extends Component {
           />
         </div>
         <div className="messages-container">
-          <div className="messages-header"></div>
-          <div className="messages">
+          <ScrollToBottom className="messages">
             {this.state.messages.map(msg => {
-              return <Message user={this.state.user} msg={msg} key={msg._id} />;
+              return (
+                <div>
+                  <Message user={this.state.user} msg={msg} key={msg._id} />
+                </div>
+              );
             })}
-          </div>
+          </ScrollToBottom>
+
           <div>
             <form className="message-area" onSubmit={this.sendMessage}>
               <textarea
