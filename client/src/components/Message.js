@@ -1,11 +1,8 @@
-import React, { Component } from "react";
+import React from "react";
 
 const Message = props => {
   const msg = props.msg;
   const user = props.user;
-  console.log("HEY LLOOOOOOOOOK AT USER", user.username);
-  console.log("HEY LLOOOOOOOOOK AT MSG", msg.username);
-  console.log(props);
 
   return (
     <>
@@ -19,11 +16,7 @@ const Message = props => {
       ) : (
         <div class="incoming_msg">
           <div class="incoming_msg_img">
-            {" "}
-            <img
-              src="https://ptetutorials.com/images/user-profile.png"
-              alt="sunil"
-            />{" "}
+            <img className="profile-pic" src={user.profilePic} alt="sunil" />
           </div>
           <div class="received_msg">
             <div key={msg._id} id="message" class="received_withd_msg">
@@ -36,6 +29,11 @@ const Message = props => {
         </div>
       )}
     </>
+    // <div key={msg._id} id="message" className="bg-light p-1">
+    //   {msg.username} said "
+    //   {user.username === msg.username ? msg.text : msg.translation}" at
+    //   {msg.created_at}
+    // </div>
   );
 };
 

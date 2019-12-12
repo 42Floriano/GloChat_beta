@@ -12,13 +12,16 @@ router.post("/updateLang", (req, res, next) => {
   const id = req.body.id;
   console.log(id, lang);
 
-  User.findByIdAndUpdate(id, { defaultLanguage: lang }, function(err, result){
-    if(err){
-        console.log(err);
+  User.findByIdAndUpdate(id, { defaultLanguage: lang }, { new: true }, function(
+    err,
+    result
+  ) {
+    if (err) {
+      console.log(err);
     }
     console.log("RESULT: " + result);
-    res.send('Done')
-});
+    res.send("Done");
+  });
 });
 
 router.post("/signup", uploadCloud.single("imagePath"), (req, res, next) => {
