@@ -5,10 +5,13 @@ import io from "socket.io-client";
 import axios from "axios";
 import Users from "./Users";
 import Message from "./Message";
+require("dotenv").config();
 
 const endpoint = "http://localhost:5000";
 
 let socket = io(endpoint);
+
+let geoLoc = process.env.GEO_KEY;
 
 class Chat extends Component {
   state = {
@@ -45,7 +48,7 @@ class Chat extends Component {
       .catch(err => console.log(err));
 
     axios
-      .get("http://geoplugin.net/json.gp")
+      .get("https://ssl.geoplugin.net/json.gp?k=549c11e3f31b9c30")
       .then(resp => {
         const { geoplugin_countryCode, geoplugin_city } = resp.data;
         this.getRooms();
@@ -284,107 +287,170 @@ class Chat extends Component {
                 />
               </div>
             </div>
-            
-            
-          
 
-          <Col xs={6} id="chat" className="received_msg">
-            <ScrollToBottom className="messages">
-              {this.state.messages.map(msg => {
-                console.log(
-                  "LOOOOOOOK AT ME AHhhhhHHHHHHHHHHHHHHHHHHHHHHH  ",
-                  msg
-                );
-                return (
-                  <Message
-                    className="received_msg"
-                    user={this.state.user}
-                    msg={msg}
-                    key={msg._id}
-                  />
-                );
-              })}
-            </ScrollToBottom>
+            <Col xs={6} id="chat" className="received_msg">
+              <ScrollToBottom className="messages">
+                {this.state.messages.map(msg => {
+                  console.log(
+                    "LOOOOOOOK AT ME AHhhhhHHHHHHHHHHHHHHHHHHHHHHH  ",
+                    msg
+                  );
+                  return (
+                    <Message
+                      className="received_msg"
+                      user={this.state.user}
+                      msg={msg}
+                      key={msg._id}
+                    />
+                  );
+                })}
+              </ScrollToBottom>
 
-            <form onSubmit={this.handleSubmit}>
-              <i
-                class="fa fa-chevron-down expand-button"
-                aria-hidden="true"
-              ></i>
-              <Form.Group controlId="exampleForm.ControlSelect1">
-                <Form.Label style={{ fontWeight: "500" }}>
-                  Select you language
-                </Form.Label>
+              <form onSubmit={this.handleSubmit}>
+                <i
+                  class="fa fa-chevron-down expand-button"
+                  aria-hidden="true"
+                ></i>
+                <Form.Group controlId="exampleForm.ControlSelect1">
+                  <Form.Label style={{ fontWeight: "500" }}>
+                    Select you language
+                  </Form.Label>
 
-                <div>
+                  <div>
+                    <div class="input_msg_write">
+                      <Form.Control
+                        as="select"
+                        className="write_msg"
+                        value={this.state.defaultLanguage}
+                        onChange={this.handleChange}
+                        name="defaultLanguage"
+                      >
+                        {Object.entries(this.state.listeLanguages).map(
+                          country => {
+                            return (
+                              <option key={country[0]}>
+                                {" "}
+                                {country[0]} - {country[1].name}{" "}
+                              </option>
+                            );
+                          }
+                        )}
+                      </Form.Control>
+                    </div>
+                  </div>
+                </Form.Group>
+
+                <button className="btn btn-light ml-4" type="submit">
+                  Change language
+                </button>
+              </form>
+
+              <form onSubmit={this.sendMessage}>
+                <div class="type_msg">
                   <div class="input_msg_write">
-                    <Form.Control
-                      as="select"
+                    <button className="btn btn-light ml-4" type="submit">
+                      <i class="language big icon" aria-hidden="true"></i>
+                    </button>
+                    <input
+                      type="text"
                       className="write_msg"
-                      value={this.state.defaultLanguage}
+                      name="message"
+                      id="message"
+                      value={this.state.message}
                       onChange={this.handleChange}
-                      name="defaultLanguage"
-                    >
-                      {Object.entries(this.state.listeLanguages).map(
-                        country => {
-                          return (
-                            <option key={country[0]}>
-                              {" "}
-                              {country[0]} - {country[1].name}{" "}
-                            </option>
-                          );
-                        }
-                      )}
-                    </Form.Control>
+                    />
+
+                    <button className="btn btn-light ml-4" type="submit">
+                      Send
+                    </button>
                   </div>
                 </div>
-              </Form.Group>
+              </form>
+            </Col>
 
-              <button className="btn btn-light ml-4" type="submit">
-                Change language
-              </button>
-            </form>
-
-            <form onSubmit={this.sendMessage}>
-              <div class="type_msg">
-                <div class="input_msg_write">
-                  <button className="btn btn-light ml-4" type="submit">
-                    <i class="language big icon" aria-hidden="true"></i>
-                  </button>
-                  <input
-                    type="text"
-                    className="write_msg"
-                    name="message"
-                    id="message"
-                    value={this.state.message}
-                    onChange={this.handleChange}
-                  />
-
-                  <button className="btn btn-light ml-4" type="submit">
-                    Send
-                  </button>
-                </div>
+            <div class="type_msg">
+              <div class="input_msg_write">
+                <input
+                  type="text"
+                  class="write_msg"
+                  placeholder="Type a message"
+                />
+                <button class="msg_send_btn" type="button">
+                  <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                </button>
               </div>
-            </form>
-          </Col>
-
-          <div class="type_msg">
-            <div class="input_msg_write">
-              <input
-                type="text"
-                class="write_msg"
-                placeholder="Type a message"
-              />
-              <button class="msg_send_btn" type="button">
-                <i class="fa fa-paper-plane" aria-hidden="true"></i>
-              </button>
             </div>
           </div>
         </div>
-      </div>
       </div>
     );
   }
 }
 
 export default Chat;
+
+// axios
+//       .get(
+//         "https://api.cognitive.microsofttranslator.com/languages?api-version=3.0"
+//       )
+//       .then(listeCountry => {
+//         this.setState({
+//           listeLanguages: listeCountry.data.dictionary
+//         });
+//         //  console.log(this.state.listeLanguages);
+
+//         //   const arr = Object.entries(this.state.listeLanguages);
+//         //   arr.map(item => {
+//         //    console.log(item[0]);
+//         //      console.log(item[1].name);
+//         //   });
+//       })
+//       .catch(err => console.log(err));
+
+//     axios
+//       .get("http://geoplugin.net/json.gp")
+//       .then(resp => {
+//         const { geoplugin_countryCode, geoplugin_city } = resp.data;
+//         this.getRooms();
+//         socket.emit("new_user", this.state.user);
+//         socket.on("users", users => {
+//           this.setState({
+//             onlineUsers: users,
+//             user: {
+//               ...this.props.user,
+//               isOnline: true,
+//               connection: {
+//                 countryCode: geoplugin_countryCode,
+//                 city: geoplugin_city
+//               }
+//             }
+//           });
+//         });
+
+//         socket.on("message", message => {
+//           //this.getMessages(this.state.roomId);
+//           this.setState({
+//             messages: [...this.state.messages, message]
+//           });
+//         });
+
+//         socket.on("welcome", message => {
+//           console.log(message);
+//           this.getRooms();
+//         });
+//         socket.on("room", room => {
+//           this.setState(
+//             {
+//               roomId: room[0]._id
+//             },
+//             () => this.joinRoom(room[0])
+//           );
+//           this.getRooms();
+//         });
+//       })
+//       .catch(err => console.log(err));
+
+//     socket.emit("disconnect");
+
+//     socket.off();
+//   };
