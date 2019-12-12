@@ -64,8 +64,10 @@ app.use("/auth", authRoutes);
 const cloudinaryRouter = require("./routes/cloudinaryRoute");
 app.use("/api/cloudinary", cloudinaryRouter);
 
-const test = require("./routes/test");
-app.use("/api/test", test);
+// const test = require("./routes/test");
+// app.use("/api/test", test);
+
+app.use("/geo", require("./routes/goe"));
 
 app.use((req, res) => {
   // If no routes match, send them the React HTML.

@@ -4,10 +4,13 @@ import io from "socket.io-client";
 import axios from "axios";
 import Message from "./Message";
 import Rooms from "./Rooms";
+require("dotenv").config();
 
-const endpoint = "http://localhost:5000";
+const endpoint = process.env.CALLBACK_URL;
 
 let socket = io(endpoint);
+
+let geoLoc = process.env.GEO_KEY;
 
 class Chat1 extends Component {
   state = {
@@ -25,6 +28,10 @@ class Chat1 extends Component {
     searchOn: false
   };
 
+  scrollToBottom = () => {
+    this.messagesEnd.scrollIntoView({ behavior: "smooth" });
+  };
+
   componentDidMount = () => {
     axios
       .get(
@@ -38,9 +45,10 @@ class Chat1 extends Component {
       .catch(err => console.log(err));
 
     axios
-      .get("http://geoplugin.net/json.gp")
+      .get("/geo") // https://ssl.geoplugin.net/json.gp?k=get a key "https://ssl.geoplugin.net/json.gp?k=549c11e3f31b9c30"
       .then(resp => {
-        const { geoplugin_countryCode, geoplugin_city } = resp.data;
+        const { country, region } = resp.data;
+        console.log(resp.data);
         this.getRooms();
         socket.emit("new_user", this.state.user);
         socket.on("users", users => {
@@ -50,8 +58,8 @@ class Chat1 extends Component {
               ...this.props.user,
               isOnline: true,
               connection: {
-                countryCode: geoplugin_countryCode,
-                city: geoplugin_city
+                countryCode: country,
+                city: region
               }
             }
           });
@@ -78,11 +86,16 @@ class Chat1 extends Component {
         });
       })
       .catch(err => console.log(err));
+    this.scrollToBottom();
 
     socket.emit("disconnect");
 
     socket.off();
   };
+
+  componentDidUpdate() {
+    this.scrollToBottom();
+  }
 
   handleChange = event => {
     this.setState({
@@ -199,6 +212,7 @@ class Chat1 extends Component {
   };
 
   render() {
+    console.log(this.state.messages);
     return (
       <div className="chat-container">
         {this.state.searchOn ? (
@@ -278,7 +292,9 @@ class Chat1 extends Component {
         )}
 
         <div className="messages-container">
-          <ScrollToBottom className="messages">
+          {/* <ScrollToBottom className="messages"> */}
+
+          <div className="messages">
             {this.state.messages.map(msg => {
               return (
                 <div>
@@ -286,7 +302,15 @@ class Chat1 extends Component {
                 </div>
               );
             })}
-          </ScrollToBottom>
+            <div
+            style={{ float: "left", clear: "both" }}
+            ref={el => {
+              this.messagesEnd = el;
+            }}
+          ></div>
+          </div>
+          
+          {/* </ScrollToBottom> */}
 
           <div>
             <form className="message-area" onSubmit={this.sendMessage}>
