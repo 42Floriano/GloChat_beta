@@ -40,7 +40,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 //Static folder
-app.use(express.static(path.join(__dirname, "public")));
+// app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "/client/build")));
 
 // Enable authentication using session + passport
 app.use(
@@ -65,5 +66,10 @@ app.use("/api/cloudinary", cloudinaryRouter);
 
 const test = require("./routes/test");
 app.use("/api/test", test);
+
+app.use((req, res) => {
+  // If no routes match, send them the React HTML.
+  res.sendFile(__dirname + "/client/build/index.html");
+});
 
 module.exports = app;
