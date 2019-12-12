@@ -178,8 +178,11 @@ io.on("connection", socket => {
 
         User.findById(person._id).then(async data => {
           const lang = data.defaultLanguage;
+          console.log(lang);
           const result = await messageFromFrontEnd(message, lang);
+          console.log(result);
           const newMessage = result[0].translations;
+
           const newAndImprovedMessage = newMessage[0].text;
 
           Message.create({
