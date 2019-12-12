@@ -6,7 +6,7 @@ import axios from "axios";
 import Users from "./Users";
 import Message from "./Message";
 
-const endpoint = "http://localhost:5000";
+const endpoint = process.env.CALLBACK_URL;
 
 let socket = io(endpoint);
 
@@ -45,7 +45,7 @@ class Chat extends Component {
       .catch(err => console.log(err));
 
     axios
-      .get("http://geoplugin.net/json.gp")
+      .get("http://geoplugin.net/json.gp") // https://ssl.geoplugin.net/json.gp?k=get a key
       .then(resp => {
         const { geoplugin_countryCode, geoplugin_city } = resp.data;
         this.getRooms();
@@ -284,104 +284,101 @@ class Chat extends Component {
                 />
               </div>
             </div>
-            
-            
-          
 
-          <Col xs={6} id="chat" className="received_msg">
-            <ScrollToBottom className="messages">
-              {this.state.messages.map(msg => {
-                console.log(
-                  "LOOOOOOOK AT ME AHhhhhHHHHHHHHHHHHHHHHHHHHHHH  ",
-                  msg
-                );
-                return (
-                  <Message
-                    className="received_msg"
-                    user={this.state.user}
-                    msg={msg}
-                    key={msg._id}
-                  />
-                );
-              })}
-            </ScrollToBottom>
+            <Col xs={6} id="chat" className="received_msg">
+              <ScrollToBottom className="messages">
+                {this.state.messages.map(msg => {
+                  console.log(
+                    "LOOOOOOOK AT ME AHhhhhHHHHHHHHHHHHHHHHHHHHHHH  ",
+                    msg
+                  );
+                  return (
+                    <Message
+                      className="received_msg"
+                      user={this.state.user}
+                      msg={msg}
+                      key={msg._id}
+                    />
+                  );
+                })}
+              </ScrollToBottom>
 
-            <form onSubmit={this.handleSubmit}>
-              <i
-                class="fa fa-chevron-down expand-button"
-                aria-hidden="true"
-              ></i>
-              <Form.Group controlId="exampleForm.ControlSelect1">
-                <Form.Label style={{ fontWeight: "500" }}>
-                  Select you language
-                </Form.Label>
+              <form onSubmit={this.handleSubmit}>
+                <i
+                  class="fa fa-chevron-down expand-button"
+                  aria-hidden="true"
+                ></i>
+                <Form.Group controlId="exampleForm.ControlSelect1">
+                  <Form.Label style={{ fontWeight: "500" }}>
+                    Select you language
+                  </Form.Label>
 
-                <div>
+                  <div>
+                    <div class="input_msg_write">
+                      <Form.Control
+                        as="select"
+                        className="write_msg"
+                        value={this.state.defaultLanguage}
+                        onChange={this.handleChange}
+                        name="defaultLanguage"
+                      >
+                        {Object.entries(this.state.listeLanguages).map(
+                          country => {
+                            return (
+                              <option key={country[0]}>
+                                {" "}
+                                {country[0]} - {country[1].name}{" "}
+                              </option>
+                            );
+                          }
+                        )}
+                      </Form.Control>
+                    </div>
+                  </div>
+                </Form.Group>
+
+                <button className="btn btn-light ml-4" type="submit">
+                  Change language
+                </button>
+              </form>
+
+              <form onSubmit={this.sendMessage}>
+                <div class="type_msg">
                   <div class="input_msg_write">
-                    <Form.Control
-                      as="select"
+                    <button className="btn btn-light ml-4" type="submit">
+                      <i class="language big icon" aria-hidden="true"></i>
+                    </button>
+                    <input
+                      type="text"
                       className="write_msg"
-                      value={this.state.defaultLanguage}
+                      name="message"
+                      id="message"
+                      value={this.state.message}
                       onChange={this.handleChange}
-                      name="defaultLanguage"
-                    >
-                      {Object.entries(this.state.listeLanguages).map(
-                        country => {
-                          return (
-                            <option key={country[0]}>
-                              {" "}
-                              {country[0]} - {country[1].name}{" "}
-                            </option>
-                          );
-                        }
-                      )}
-                    </Form.Control>
+                    />
+
+                    <button className="btn btn-light ml-4" type="submit">
+                      Send
+                    </button>
                   </div>
                 </div>
-              </Form.Group>
+              </form>
+            </Col>
 
-              <button className="btn btn-light ml-4" type="submit">
-                Change language
-              </button>
-            </form>
-
-            <form onSubmit={this.sendMessage}>
-              <div class="type_msg">
-                <div class="input_msg_write">
-                  <button className="btn btn-light ml-4" type="submit">
-                    <i class="language big icon" aria-hidden="true"></i>
-                  </button>
-                  <input
-                    type="text"
-                    className="write_msg"
-                    name="message"
-                    id="message"
-                    value={this.state.message}
-                    onChange={this.handleChange}
-                  />
-
-                  <button className="btn btn-light ml-4" type="submit">
-                    Send
-                  </button>
-                </div>
+            <div class="type_msg">
+              <div class="input_msg_write">
+                <input
+                  type="text"
+                  class="write_msg"
+                  placeholder="Type a message"
+                />
+                <button class="msg_send_btn" type="button">
+                  <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                </button>
               </div>
-            </form>
-          </Col>
-
-          <div class="type_msg">
-            <div class="input_msg_write">
-              <input
-                type="text"
-                class="write_msg"
-                placeholder="Type a message"
-              />
-              <button class="msg_send_btn" type="button">
-                <i class="fa fa-paper-plane" aria-hidden="true"></i>
-              </button>
             </div>
           </div>
         </div>
-      </div>
       </div>
     );
   }
