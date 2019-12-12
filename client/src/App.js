@@ -4,7 +4,7 @@ import NavBar from "./components/Navbar";
 import Home from "./components/Home";
 import Signup from "./components/Signup";
 import Login from "./components/Login";
-import Chat1 from "./components/Chat1";
+import Chat from "./components/Chat";
 import Settings from "./components/Settings";
 import About from "./components/About";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -29,7 +29,7 @@ class App extends Component {
           <Route
             exact
             path="/"
-            render={props => <Chat1 user={this.state.user} {...props} />}
+            render={props => <Chat user={this.state.user} {...props} />}
           />
         ) : (
           <Route exact path="/" component={Home} />

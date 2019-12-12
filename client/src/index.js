@@ -5,7 +5,7 @@ import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import { BrowserRouter } from "react-router-dom";
 import axios from "axios";
-import "./style1.css";
+import "./style.css";
 
 axios.get("/auth/loggedin").then(response => {
   const user = response.data;

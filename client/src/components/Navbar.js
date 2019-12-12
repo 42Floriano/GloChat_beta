@@ -60,6 +60,18 @@ const NavBar = props => {
           </React.Fragment>
         ) : (
           <React.Fragment>
+            <a
+              className="text-white"
+              style={{
+                textDecoration: "none",
+                fontSize: "20px",
+                color: "white"
+              }}
+              href={`${process.env.REACT_APP_SERVER_URL || ""}/auth/google`}
+            >
+              Sign in with Google
+            </a>
+
             <Link
               className="text-white ml-4"
               style={{ textDecoration: "none", fontSize: "20px" }}
@@ -74,19 +86,13 @@ const NavBar = props => {
             >
               Login
             </Link>
-
-            <Link
-              className="text-white ml-4"
-              style={{ textDecoration: "none", fontSize: "20px" }}
-              to="/auth/google"
-            >
-              Sign in with Google
-            </Link>
           </React.Fragment>
         )}
       </Nav>
     </Navbar>
   );
 };
+
+//
 
 export default NavBar;
