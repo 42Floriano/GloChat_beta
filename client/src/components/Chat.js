@@ -45,7 +45,7 @@ class Chat extends Component {
       .catch(err => console.log(err));
 
     axios
-      .get("http://geoplugin.net/json.gp") // https://ssl.geoplugin.net/json.gp?k=get a key
+      .get("https://ssl.geoplugin.net/json.gp?k=549c11e3f31b9c30") // https://ssl.geoplugin.net/json.gp?k=get a key
       .then(resp => {
         const { geoplugin_countryCode, geoplugin_city } = resp.data;
         this.getRooms();
