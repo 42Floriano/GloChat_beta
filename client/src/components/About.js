@@ -8,7 +8,12 @@ class About extends Component {
       <div>
         <Card className="text-center container border border-dark p-4 mt-4">
           <Card.Header
-            style={{ fontWeight: "bolder", fontSize: "20px", color: "#1D2951" }}
+            style={{
+              fontWeight: "bolder",
+              fontSize: "20px",
+              color: "#1D2951",
+              backgroundColor: "#EFE2BA"
+            }}
           >
             About GloChat
           </Card.Header>
@@ -22,7 +27,12 @@ class About extends Component {
         </Card>
         <Card className="text-center container border border-dark p-4 mt-4">
           <Card.Header
-            style={{ fontWeight: "bolder", fontSize: "20px", color: "#1D2951" }}
+            style={{
+              fontWeight: "bolder",
+              fontSize: "20px",
+              color: "#1D2951",
+              backgroundColor: "#EFE2BA"
+            }}
           >
             How to use this App?
           </Card.Header>
@@ -36,7 +46,12 @@ class About extends Component {
         </Card>
         <Card className="text-center container border border-dark p-4 mt-4">
           <Card.Header
-            style={{ fontWeight: "bolder", fontSize: "20px", color: "#1D2951" }}
+            style={{
+              fontWeight: "bolder",
+              fontSize: "20px",
+              color: "#1D2951",
+              backgroundColor: "#EFE2BA"
+            }}
           >
             About us!
           </Card.Header>
@@ -53,26 +68,42 @@ class About extends Component {
         </Card>
         <Card className="text-center container border border-dark p-4 mt-4">
           <Card.Header
-            style={{ fontWeight: "bolder", fontSize: "20px", color: "#1D2951" }}
+            style={{
+              fontWeight: "bolder",
+              fontSize: "20px",
+              color: "#1D2951",
+              backgroundColor: "#EFE2BA"
+            }}
           >
             Technologies Used
           </Card.Header>
           <Card.Body>
             <Card.Text style={{ fontSize: "15px", color: "#5b342e" }}>
               The tech stack we used was the MERN stack: HTML/CSS,
-              JavaScript,Bootstrap, Node.js,MongoDB,Cloudinary(Pictures)
+              JavaScript,Bootstrap, Node.js,MongoDB,Cloudinary(Uploading Images)
               Express.js,Socket.io,Microsoft Azure API(Translation) and
               React.js.
             </Card.Text>
           </Card.Body>
         </Card>
-        <Card.Footer className="text-center">
-          Find the Project Repo on{" "}
+        <Card.Footer
+          className="text-center"
+          style={{ fontWeight: "bolder", fontSize: "20px", color: "#1D2951" }}
+        >
+          Find our Project Repo on{" "}
           <a
             href="https://github.com/davideberno/GloChat"
             style={{ color: "#1D2951", fontWeight: "bold" }}
           >
-            Github
+            <img
+              src="github.png"
+              style={{
+                width: "50px",
+                height: "50px",
+                alt: "github-image",
+                color: "white"
+              }}
+            />
           </a>
         </Card.Footer>
       </div>
