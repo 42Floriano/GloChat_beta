@@ -6,7 +6,7 @@ const Message = props => {
 
   return (
     <>
-      {user.username == msg.username ? (
+      {user.username === msg.username ? (
         <div class="outgoing_msg">
           <div key={msg._id} id="message" className="sent_msg">
             <p>{user.username === msg.username ? msg.text : msg.translation}</p>

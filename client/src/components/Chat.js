@@ -21,7 +21,8 @@ class Chat1 extends Component {
     search: "",
     socketId: socket.id,
     listeLanguages: {},
-    defaultLanguage: this.props.user.defaultLanguage
+    defaultLanguage: this.props.user.defaultLanguage,
+    searchOn: false
   };
 
   componentDidMount = () => {
@@ -141,7 +142,8 @@ class Chat1 extends Component {
   joinPrivate = user => {
     socket.emit("joinPrivate", { user1: this.state.user, user2: user });
     this.setState({
-      users: []
+      users: [],
+      searchOn: false
     });
   };
 
@@ -181,38 +183,99 @@ class Chat1 extends Component {
     });
   };
 
+  userIsOnline = user => {
+    const online = this.state.onlineUsers
+      .map(x => {
+        return x && x._id;
+      })
+      .includes(user._id);
+    return online;
+  };
+
+  openSearch = () => {
+    this.setState({
+      searchOn: true
+    });
+  };
+
   render() {
     return (
       <div className="chat-container">
-        <div className="rooms-container">
-          <div className="search-area">
-            <input type="text" placeholder="Search for a user" />
-          </div>
-          <Rooms
-            user={this.state.user}
-            rooms={this.state.rooms}
-            users={this.state.users}
-            onlineUsers={this.state.onlineUsers}
-            joinRoom={this.joinRoom}
-          />
-          <div className="select-language">
-            <label>Select your language</label>
-            <select
-              value={this.state.defaultLanguage}
-              onChange={this.handleSubmitLang}
-              name="defaultLanguage"
-              class="form-control"
-            >
-              {Object.entries(this.state.listeLanguages).map(country => {
+        {this.state.searchOn ? (
+          <div className="rooms-container">
+            <div className="search-container">
+              <form onSubmit={this.searchUsers}>
+                <div className="search-area">
+                  <input
+                    type="text"
+                    placeholder="Insert username or email"
+                    className="search-bar"
+                    name="search"
+                    id="search"
+                    value={this.state.search}
+                    onChange={this.handleChange}
+                  />
+                </div>
+              </form>
+
+              {this.state.users.map(user => {
                 return (
-                  <option key={country[0]}>
-                    {country[0]} - {country[1].name}
-                  </option>
+                  <a classNameName="" onClick={() => this.joinPrivate(user)}>
+                    <div key={user._id} className="room searched-user">
+                      <img
+                        src={user.profilePic}
+                        alt="user"
+                        className="profile-pic"
+                      />
+
+                      <h5>{user.username}</h5>
+                      <img
+                        className="dot"
+                        src={
+                          this.userIsOnline(user)
+                            ? "green-dot.png"
+                            : "red-dot.png"
+                        }
+                      />
+                    </div>
+                  </a>
                 );
               })}
-            </select>
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="rooms-container">
+            <div className="search-header">
+              <button className="btn" onClick={this.openSearch}>
+                Search for a user
+              </button>
+            </div>
+            <Rooms
+              user={this.state.user}
+              rooms={this.state.rooms}
+              users={this.state.users}
+              onlineUsers={this.state.onlineUsers}
+              joinRoom={this.joinRoom}
+            />
+            <div className="select-language">
+              <label>Select your language</label>
+              <select
+                value={this.state.defaultLanguage}
+                onChange={this.handleSubmitLang}
+                name="defaultLanguage"
+                class="form-control"
+              >
+                {Object.entries(this.state.listeLanguages).map(country => {
+                  return (
+                    <option key={country[0]}>
+                      {country[0]} - {country[1].name}
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
+          </div>
+        )}
 
         <div className="messages-container">
           <ScrollToBottom className="messages">
