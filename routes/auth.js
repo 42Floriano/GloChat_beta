@@ -12,13 +12,13 @@ router.post("/updateLang", (req, res, next) => {
   const id = req.body.id;
   console.log(id, lang);
 
-  User.findByIdAndUpdate(id, { defaultLanguage: lang }, function(err, result){
-    if(err){
-        console.log(err);
+  User.findByIdAndUpdate(id, { defaultLanguage: lang }, function(err, result) {
+    if (err) {
+      console.log(err);
     }
     console.log("RESULT: " + result);
-    res.send('Done')
-});
+    res.send("Done");
+  });
 });
 
 router.post("/signup", uploadCloud.single("imagePath"), (req, res, next) => {
@@ -75,16 +75,13 @@ router.post("/signup", uploadCloud.single("imagePath"), (req, res, next) => {
     });
 });
 router.get("/google", passport.authenticate("google", { scope: ["profile"] }));
-
 router.get(
   "/google/callback",
-  passport.authenticate("google", { failureRedirect: "/auth/login" }),
-  function(req, res) {
-    // Successful authentication, redirect home.
-    console.log(res);
-  }
+  passport.authenticate("google", {
+    failureRedirect: "/auth/login",
+    successRedirect: process.env.SUCCESS_REDIRECT
+  })
 );
-
 router.post("/login", (req, res, next) => {
   passport.authenticate("local", (err, user) => {
     if (err) {
