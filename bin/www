@@ -184,7 +184,7 @@ io.on("connection", socket => {
           const newMessage = result[0].translations;
 
           const newAndImprovedMessage = newMessage[0].text;
-
+// salut
           Message.create({
             text: message,
             translation: newAndImprovedMessage,
