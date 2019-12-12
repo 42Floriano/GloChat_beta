@@ -45,9 +45,10 @@ class Chat extends Component {
       .catch(err => console.log(err));
 
     axios
-      .get("https://ssl.geoplugin.net/json.gp?k=549c11e3f31b9c30") // https://ssl.geoplugin.net/json.gp?k=get a key
+      .get("/geo/") // https://ssl.geoplugin.net/json.gp?k=get a key "https://ssl.geoplugin.net/json.gp?k=549c11e3f31b9c30"
       .then(resp => {
-        const { geoplugin_countryCode, geoplugin_city } = resp.data;
+        const { country, region } = resp.data;
+        console.log(resp.data);
         this.getRooms();
         socket.emit("new_user", this.state.user);
         socket.on("users", users => {
@@ -57,8 +58,8 @@ class Chat extends Component {
               ...this.props.user,
               isOnline: true,
               connection: {
-                countryCode: geoplugin_countryCode,
-                city: geoplugin_city
+                countryCode: country,
+                city: region
               }
             }
           });
