@@ -130,6 +130,7 @@ io.on("connection", socket => {
   console.log("Client connected", socket.id);
 
   socket.on("new_user", user => {
+    console.log("NEW USER")
     socket.user = user;
     emitUsers();
   });
@@ -195,13 +196,13 @@ io.on("connection", socket => {
               Room.findOneAndUpdate(
                 { _id: roomId },
                 { $push: { messages: message._id } }
-              ).then(room => {});
+              ).then(room => { });
             })
             .catch(err => console.log(err));
         });
       });
   });
-  socket.on("disconnect", function() {
+  socket.on("disconnect", function () {
     emitUsers();
     console.log("User disconnected");
   });
