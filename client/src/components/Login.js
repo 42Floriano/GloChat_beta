@@ -40,8 +40,8 @@ class Login extends Component {
   render() {
     console.log(this.props);
     return (
-      <div className="container border border-secondary p-4 mt-4 mr-auto ml-auto col-md-3 ">
-        <h2 className="text-center" style={{ fontWeight: "bold" }}>
+      <div className="container border border-secondary p-4 mt-4 mr-auto ml-auto col-md-3 loginDivPage">
+        <h2 className="text-center" style={{ marginTop: "20px", marginBot: "20px", fontWeight: "bold" }}>
           Login
         </h2>
         <Form onSubmit={this.handleSubmit}>
@@ -72,9 +72,9 @@ class Login extends Component {
           {this.state.error && (
             <Alert variant="danger">{this.state.error}</Alert>
           )}
-          <Button
+          <Button className="btn btn-primary btn-lg"
             style={{
-              backgroundColor: "crimson",
+              // backgroundColor: "crimson",
               color: "white",
               margin: "20px auto",
               display: "flex",

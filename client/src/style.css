@@ -1,13 +1,79 @@
 * {
   margin: 0;
   padding: 0;
+  font-family: Helvetica, Arial, sans-serif;
 }
-
+body {
+  background-color: white;
+}
 footer {
   background-color: #4056a1;
   margin: 0;
 }
 
+/* ------------------------ NAVBAR ---------------------------- */
+
+.brand {
+  margin-left: 25px;
+}
+.navBar {
+  background-color: #4056a1;
+}
+
+.linkLogo {
+  text-decoration: none;
+  font-size: 25px;
+}
+
+.globalImg {
+  width: 18px;
+  height: 18px;
+  color: white;
+  margin-bottom: 3pt;
+}
+
+.imgProfile {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.loginDiv {
+  margin-right: -15px;
+  margin-top: 16px;
+  display: flex;
+  flex-direction: row;
+}
+
+.loginDiv img {
+  margin-top: -3px;
+  margin-right: 20px;
+}
+
+.loginDiv p {
+  color: white;
+  font-size: 20px;
+  margin-right: 15px;
+  align-items: center;
+  align-content: center;
+}
+
+.menuRight {
+  margin-right: 25px;
+}
+
+/* -------------------------------------------------------------- */
+
+.loginDivPage {
+
+  background-color: white;
+  margin-top: 62px !important;
+  -webkit-box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.75);
+  box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.75);
+}
 .home-container {
   display: flex;
   flex-direction: column;

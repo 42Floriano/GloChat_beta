@@ -26,6 +26,8 @@ const NavBar = props => {
         </Link>
       </Navbar.Brand>
       <Nav className="mr-auto">
+
+      
         {props.user ? (
           <React.Fragment>
             <Link
@@ -69,7 +71,7 @@ const NavBar = props => {
               }}
               href={`${process.env.REACT_APP_SERVER_URL || ""}/auth/google`}
             >
-              Sign in with Google
+              Sign in with 
             </a>
 
             <Link
