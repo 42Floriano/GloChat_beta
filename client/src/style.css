@@ -10,7 +10,41 @@ footer {
   background-color: #4056a1;
   margin: 0;
 }
+/* --------------------------- Carousel ------------------------------ */
 
+.carouselMain {
+  margin: 50px 0px 40px;
+  padding: 20px 0px 40px;
+}
+.carouselIMG {
+  margin-left: auto;
+  margin-right: auto;
+  padding-bottom: 200px;
+  height: 650px;
+  align-content: center;
+}
+
+.carouselIMGThree {
+  margin-top: 40px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-bottom: 150px;
+  height: 600px;
+  align-content: center;
+}
+
+.caption {
+  margin-top: 50px;
+}
+
+.caption h3 {
+  color: black;
+  font-size: 2.5rem;
+}
+.caption p {
+  font-size: 1.3rem;
+  color: black;
+}
 /* ------------------------ NAVBAR ---------------------------- */
 
 .brand {
@@ -67,7 +101,6 @@ footer {
 /* -------------------------------------------------------------- */
 
 .loginDivPage {
-
   background-color: white;
   margin-top: 62px !important;
   -webkit-box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.75);
