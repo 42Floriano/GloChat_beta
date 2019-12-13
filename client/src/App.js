@@ -58,8 +58,11 @@ class App extends Component {
         <Route
           exact
           path="/settings"
-          setUser={this.setUser}
-          component={Settings}
+          render={props => (
+            <Settings user={this.state.user} setUser={this.setUser} {...props} />
+          )}
+          // setUser={this.setUser}
+          // component={Settings}
         />
         <Route exact path="/about" setUser={this.setUser} component={About} />
       </div>

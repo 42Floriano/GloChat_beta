@@ -93,7 +93,7 @@ class Signup extends Component {
 
   render() {
     return (
-      <div className="container border border-secondary p-4 mt-4 mr-auto ml-auto col-md-4  ">
+      <div className="container border border-secondary p-4 mt-4 mr-auto ml-auto col-md-4 loginDivPage ">
         <h2 className="text-center" style={{ fontWeight: "bold" }}>
           SignUp
         </h2>
@@ -137,21 +137,22 @@ class Signup extends Component {
               // pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,15}"
             />
 
-            <b
+            <p
               style={{
                 color: "#1D2951",
                 textAlign: "center",
-                fontSize: "0.5em "
+                fontSize: "0.9em ",
+                textAlign: "left",
               }}
             >
               Your password should contain at least one uppercase letter, one
               downcase letter, one number and be at least 8 to 15 characters
               long and special characters.
-            </b>
+            </p>
           </Form.Group>
           <Form.Group>
             <Form.Label htmlFor="text" style={{ fontWeight: "500" }}>
-              Add a Bio:{" "}
+              Add Biography:{" "}
             </Form.Label>
             <Form.Control
               type="text"
@@ -216,9 +217,9 @@ class Signup extends Component {
             </Form.Control>
           </Form.Group> */}
           {!this.state.upload && (
-            <Button
+            <Button className="btn btn-primary btn-lg"
               style={{
-                backgroundColor: "crimson",
+                // backgroundColor: "crimson",
                 color: "white",
                 margin: "20px auto",
                 display: "flex",

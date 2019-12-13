@@ -14,53 +14,34 @@ const Navigation = props => {
       collapseOnSelect
       expand="lg"
       variant="dark"
-      style={{ backgroundColor: "#4056A1" }}
+      className="navBar"
     >
-      <Navbar.Brand>
+      <Navbar.Brand className="brand">
         <Link
           className="text-white"
-          style={{ textDecoration: "none", fontSize: "25px" }}
+
           to="/"
         >
           GL
-          <img
-            src="global.gif"
-            style={{
-              width: "20px",
-              height: "20px",
-              alt: "globe-image",
-              color: "white"
-            }}
-          />
+          <img className="globalImg" src="global.gif" />
           Chat
         </Link>
       </Navbar.Brand>{" "}
       <Navbar.Toggle aria-controls="responsive-navbar-nav" />
       <Navbar.Collapse id="responsive-navbar-nav">
         <Nav className="mr-auto"></Nav>
-        <Nav className="align-items-center">
+        <Nav className="align-items-center menuRight">
           {props.user ? (
             <>
+            <div className="loginDiv">
               <img
                 src={props.user.profilePic}
-                style={{
-                  width: "50px",
-                  height: "50px",
-                  alt: "user-image",
-                  display: "flex",
-                  justifyContent: "center",
-                  borderRadius: "50%"
-                }}
+                className="imgProfile"
               />
-              <h1
-                style={{
-                  color: "white",
-                  fontSize: "20px",
-                  display: "flex"
-                }}
-              >
+              <p>
                 Hello {props.user.username}
-              </h1>
+              </p>
+              </div>
               <NavLink
                 className="text-white nav-link ml-3"
                 style={{
@@ -105,7 +86,7 @@ const Navigation = props => {
                 }}
                 href={`${process.env.REACT_APP_SERVER_URL || ""}/auth/google`}
               >
-                Sign in with Google
+                Sign up with Google
               </a>
 
               <NavLink
@@ -122,6 +103,13 @@ const Navigation = props => {
                 to="/signup"
               >
                 Signup
+              </NavLink>
+              <NavLink
+                className="text-white ml-3"
+                style={{ textDecoration: "none", fontSize: "20px" }}
+                to="/About"
+              >
+                About
               </NavLink>
             </>
           )}
