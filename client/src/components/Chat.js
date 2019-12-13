@@ -156,21 +156,29 @@ class Chat1 extends Component {
   };
 
   joinRoom = room => {
+    let user2;
+    if (this.state.user._id === room.users[0]._id) {
+      user2 = room.users[1];
+    } else {
+      user2 = room.users[0];
+    }
+
     socket.emit("joinRoom", {
       user: this.state.user,
       room: room._id
     });
     this.setState({
-      roomId: room._id
+      roomId: room._id,
+      user2: user2
     });
     this.getMessages(room);
   };
 
-  joinPrivate = user => {
-    socket.emit("joinPrivate", { user1: this.state.user, user2: user });
+  joinPrivate = user2 => {
+    socket.emit("joinPrivate", { user1: this.state.user, user2: user2 });
     this.setState({
       users: [],
-      user2: user,
+      user2: user2,
       searchOn: false
     });
   };
@@ -324,7 +332,12 @@ class Chat1 extends Component {
             {this.state.messages.map(msg => {
               return (
                 <div>
-                  <Message user={this.state.user} msg={msg} key={msg._id} />
+                  <Message
+                    user={this.state.user}
+                    user2={this.state.user2}
+                    msg={msg}
+                    key={msg._id}
+                  />
                 </div>
               );
             })}

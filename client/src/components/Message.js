@@ -16,7 +16,11 @@ const Message = props => {
       ) : (
         <div class="incoming_msg">
           <div class="incoming_msg_img">
-            <img className="profile-pic" src={user.profilePic} alt="sunil" />
+            <img
+              className="profile-pic"
+              src={props.user2.profilePic}
+              alt="sunil"
+            />
           </div>
           <div class="received_msg">
             <div key={msg._id} id="message" class="received_withd_msg">
@@ -29,11 +33,6 @@ const Message = props => {
         </div>
       )}
     </>
-    // <div key={msg._id} id="message" className="bg-light p-1">
-    //   {msg.username} said "
-    //   {user.username === msg.username ? msg.text : msg.translation}" at
-    //   {msg.created_at}
-    // </div>
   );
 };
 
