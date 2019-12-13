@@ -57,7 +57,7 @@ class Home extends Component {
             }}
           >
             Developed by: Davide Bernocchi, Floriano Albertini and Madhavi
-            Yalamanchili
+            Yalamanchili.
           </p>
         </footer>
       </div>

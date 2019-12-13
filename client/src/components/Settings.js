@@ -100,13 +100,45 @@ class Settings extends Component {
 
   render() {
     return (
-      <div className="container border border-secondary p-4 mt-4 mr-auto ml-auto col-md-3 ">
-        <h2 style={{ color: "black", textAlign: "center" }}>
+      <div className="container border border-secondary p-4 mt-4 mr-auto ml-auto col-md-6 ">
+        {/* <h2 style={{ color: "black", textAlign: "center" }}>
           Edit your Details!
-        </h2>
+        </h2> */}
+
         <form onSubmit={this.handleChangeClick}>
+          <Form.Label htmlFor="text" style={{ fontWeight: "500" }}>
+            Change your Profile Pic:{" "}
+          </Form.Label>
+          <div className="container  ">
+            <Form.Group>
+              <img
+                src={this.state.profilePic}
+                style={{
+                  border: "2px solid black",
+                  display: "flex",
+                  float: "left",
+                  width: "20%"
+                }}
+                alt="profile"
+              />
+
+              <Form.Control
+                id="image"
+                type="file"
+                name="imagePath"
+                placeholder="User image"
+                onChange={this.imageUpload}
+              />
+            </Form.Group>
+          </div>
+          {this.state.upload && (
+            <div>
+              Please wait for a second while we make your image look amazing
+            </div>
+          )}
+
           <FormGroup bsSize="large" controlId="password">
-            <FormLabel>New Password</FormLabel>
+            <FormLabel style={{ fontWeight: "500" }}>Change Password</FormLabel>
             <FormControl
               type="password"
               value={this.state.password}
@@ -114,7 +146,9 @@ class Settings extends Component {
             />
           </FormGroup>
           <FormGroup bsSize="large" controlId="confirmPassword">
-            <FormLabel>Confirm Password</FormLabel>
+            <FormLabel style={{ fontWeight: "500" }}>
+              Confirm Password
+            </FormLabel>
             <FormControl
               type="password"
               onChange={this.handleChange}
@@ -134,7 +168,9 @@ class Settings extends Component {
             </b>
           </FormGroup>
           <Form.Group>
-            <Form.Label htmlFor="text">Add a Bio: </Form.Label>
+            <Form.Label htmlFor="text" style={{ fontWeight: "500" }}>
+              Add a Bio:{" "}
+            </Form.Label>
             <Form.Control
               type="text"
               name="bio"
@@ -143,37 +179,7 @@ class Settings extends Component {
               onChange={this.handleChange}
             />
           </Form.Group>
-          <Form.Group>
-            <Form.Label htmlFor="text" style={{ fontWeight: "500" }}>
-              Upload an Image:{" "}
-            </Form.Label>
-            <Form.Control
-              id="image"
-              type="file"
-              name="imagePath"
-              placeholder="User image"
-              onChange={this.imageUpload}
-            />
-          </Form.Group>
-          {this.state.upload && (
-            <div>
-              Please wait for a second while we make your image look amazing
-            </div>
-          )}
-          <img
-            src={this.state.profilePic}
-            style={{
-              border: "2px solid black",
-              margin: "30px  20px",
-              display: "flex",
-              float: "right",
-              width: "10%",
-              position: "fixed",
-              bottom: "65%",
-              left: "85%"
-            }}
-            alt="profile"
-          />
+
           <Button
             block
             type="submit"
