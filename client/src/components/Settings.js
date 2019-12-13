@@ -15,7 +15,7 @@ class Settings extends Component {
     password: "",
     confirmPassword: "",
     error: "",
-    profilePic: "",
+    profilePic: this.props.user,
     bio: "",
     completed: false,
     upload: false
@@ -86,21 +86,19 @@ class Settings extends Component {
     }
   };
   componentDidMount = () => {
+    console.log(this.props.user.profilePic);
     console.log("hello");
-    axios.get("/api/test").then(user => {
-      console.log(user.data);
+    
       this.setState(
         {
-          profilePic: user.data.profilePic
-        },
-        () => console.log(this.state.profilePic)
-      );
-    });
+          profilePic: this.props.user.profilePic
+        });
+    
   };
 
   render() {
     return (
-      <div className="container border border-secondary p-4 mt-4 mr-auto ml-auto col-md-6 ">
+      <div className="container border border-secondary p-4 mt-4 mr-auto ml-auto col-md-6 loginDivPage">
         {/* <h2 style={{ color: "black", textAlign: "center" }}>
           Edit your Details!
         </h2> */}
@@ -114,10 +112,11 @@ class Settings extends Component {
               <img
                 src={this.state.profilePic}
                 style={{
-                  border: "2px solid black",
+                  border: "1px solid black",
                   display: "flex",
                   float: "left",
-                  width: "20%"
+                  width: "20%",
+                  margin: "10px 0px 10px",
                 }}
                 alt="profile"
               />
@@ -155,17 +154,18 @@ class Settings extends Component {
               value={this.state.confirmPassword}
               pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,15}"
             />
-            <b
+            <p
               style={{
                 color: "#1D2951",
                 textAlign: "center",
-                fontSize: "0.5em "
+                fontSize: "0.9em ",
+                textAlign: "left"
               }}
             >
               Your password should contain at least one uppercase letter, one
               downcase letter, one number and be at least 8 to 15 characters
               long and special characters.
-            </b>
+            </p>
           </FormGroup>
           <Form.Group>
             <Form.Label htmlFor="text" style={{ fontWeight: "500" }}>
@@ -187,8 +187,9 @@ class Settings extends Component {
             text="Change Password"
             loadingText="Changing…"
             isLoading={this.state.isChanging}
+            className="btn btn-primary btn-lg"
             style={{
-              backgroundColor: "crimson",
+              // backgroundColor: "crimson",
               color: "white",
               margin: "20px auto",
               display: "flex",

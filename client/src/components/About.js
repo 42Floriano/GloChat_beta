@@ -19,8 +19,7 @@ class About extends Component {
           <Card.Body>
             <Card.Text style={{ fontSize: "15px", color: "  #5b342e" }}>
               GloChat is a web App which help people around the world to connect
-              with each other and can also exchange messages with different
-              people in different languages globally.
+              with each other by chatting with people in different languages globally.
             </Card.Text>
           </Card.Body>
         </Card>
@@ -65,7 +64,9 @@ class About extends Component {
             </Card.Text>
           </Card.Body>
         </Card>
-        <Card className="text-center container border border-dark p-4 mt-4">
+        <Card className="text-center container border border-dark p-4 mt-4" style={{
+              marginBottom: "20px",
+            }}>
           <Card.Header
             style={{
               fontWeight: "bolder",
@@ -84,12 +85,37 @@ class About extends Component {
               React.js.
             </Card.Text>
           </Card.Body>
+
         </Card>
+
+        {/* <Card className="text-center container border border-dark p-4 mt-4" style={{
+              marginBottom: "20px",
+            }}>
+          <Card.Header
+            style={{
+              fontWeight: "bolder",
+              fontSize: "20px",
+              color: "#1D2951",
+              backgroundColor: "#EFE2BA"
+            }}
+          >
+            Developed by
+          </Card.Header>
+        
+
+          <Card.Body>
+            <Card.Text style={{ fontSize: "15px", color: "#5b342e" }}>
+            Developed by: Davide Bernocchi, Floriano Albertini and Madhavi
+            Yalamanchili.
+            </Card.Text>
+          </Card.Body>
+        </Card> */}
+
         <Card.Footer
           className="text-center"
           style={{ fontWeight: "bolder", fontSize: "20px", color: "#1D2951" }}
         >
-          Find our Project Repo on{" "}
+          Find our Project Repo on{"   "}
           <a
             href="https://github.com/davideberno/GloChat"
             style={{ color: "#1D2951", fontWeight: "bold" }}
@@ -97,10 +123,12 @@ class About extends Component {
             <img
               src="github.png"
               style={{
+                marginLeft:"10px",
                 width: "50px",
                 height: "50px",
                 alt: "github-image",
                 color: "white"
+                
               }}
             />
           </a>

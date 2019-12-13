@@ -243,7 +243,7 @@ class Chat1 extends Component {
 
   render() {
     return (
-      <div className="chat-container">
+      <div className="chat-container loginDivPage">
         {this.state.searchOn ? (
           <div className="rooms-container">
             <div className="search-container">
