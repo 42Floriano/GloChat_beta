@@ -10,7 +10,20 @@ footer {
   background-color: #4056a1;
   margin: 0;
 }
+/* --------------------------- Carousel ------------------------------ */
 
+.carouselMain {
+  margin: 40px 0px 40px;
+  padding: 20px 0px 40px;
+
+}
+
+.carouselIMG {
+  margin-left: auto;
+  margin-right: auto;
+  height: 500px;
+  align-content: center;
+}
 /* ------------------------ NAVBAR ---------------------------- */
 
 .brand {
