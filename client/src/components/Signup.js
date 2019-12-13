@@ -26,13 +26,6 @@ class Signup extends Component {
         this.setState({
           listeLanguages: listeCountry.data.dictionary
         });
-        //  console.log(this.state.listeLanguages);
-
-        //   const arr = Object.entries(this.state.listeLanguages);
-        //   arr.map(item => {
-        //    console.log(item[0]);
-        //      console.log(item[1].name);
-        //   });
       })
       .catch(err => console.log(err));
   }

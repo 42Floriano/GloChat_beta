@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import ScrollToBottom from "react-scroll-to-bottom";
+// import ScrollToBottom from "react-scroll-to-bottom";
 import io from "socket.io-client";
 import axios from "axios";
 import Message from "./Message";
@@ -16,6 +16,7 @@ class Chat1 extends Component {
   state = {
     user: this.props.user,
     users: [],
+    user2: {},
     onlineUsers: [],
     messages: [],
     message: "",
@@ -25,7 +26,8 @@ class Chat1 extends Component {
     socketId: socket.id,
     listeLanguages: {},
     defaultLanguage: this.props.user.defaultLanguage,
-    searchOn: false
+    searchOn: false,
+    isTyping: false
   };
 
   scrollToBottom = () => {
@@ -48,7 +50,6 @@ class Chat1 extends Component {
       .get("/geo") // https://ssl.geoplugin.net/json.gp?k=get a key "https://ssl.geoplugin.net/json.gp?k=549c11e3f31b9c30"
       .then(resp => {
         const { country, region } = resp.data;
-        console.log(resp.data);
         this.getRooms();
         socket.emit("new_user", this.state.user);
         socket.on("users", users => {
@@ -71,6 +72,18 @@ class Chat1 extends Component {
             messages: [...this.state.messages, message]
           });
         });
+
+        // socket.on("typing", () => {
+        //   this.setState({
+        //     isTyping: true
+        //   });
+        // });
+
+        // socket.on("stopped-typing", () => {
+        //   this.setState({
+        //     isTyping: false
+        //   });
+        // });
 
         socket.on("welcome", message => {
           this.getRooms();
@@ -98,6 +111,7 @@ class Chat1 extends Component {
   }
 
   handleChange = event => {
+    if (this.state.message) socket.emit("typing", "typing");
     this.setState({
       [event.target.name]: event.target.value
     });
@@ -156,6 +170,7 @@ class Chat1 extends Component {
     socket.emit("joinPrivate", { user1: this.state.user, user2: user });
     this.setState({
       users: [],
+      user2: user,
       searchOn: false
     });
   };
@@ -207,12 +222,18 @@ class Chat1 extends Component {
 
   openSearch = () => {
     this.setState({
-      searchOn: true
+      searchOn: !this.state.searchOn
     });
   };
 
+  // isTyping = () => {
+  //   socket.emit("typing", this.state.user2);
+  //   setTimeout(() => {
+  //     socket.emit("stopped-typing", this.state.user2);
+  //   }, 2000);
+  // };
+
   render() {
-    console.log(this.state.messages);
     return (
       <div className="chat-container">
         {this.state.searchOn ? (
@@ -228,7 +249,7 @@ class Chat1 extends Component {
                     id="search"
                     value={this.state.search}
                     onChange={this.handleChange}
-                  />
+                  />{" "}
                 </div>
               </form>
 
@@ -255,6 +276,11 @@ class Chat1 extends Component {
                   </a>
                 );
               })}
+            </div>
+            <div className="search-footer">
+              <span onClick={this.openSearch}>
+                Go back <i class="fas fa-chevron-right"></i>
+              </span>
             </div>
           </div>
         ) : (
@@ -303,30 +329,33 @@ class Chat1 extends Component {
               );
             })}
             <div
-            style={{ float: "left", clear: "both" }}
-            ref={el => {
-              this.messagesEnd = el;
-            }}
-          ></div>
+              style={{ float: "left", clear: "both" }}
+              ref={el => {
+                this.messagesEnd = el;
+              }}
+            ></div>
           </div>
-          
+
           {/* </ScrollToBottom> */}
 
-          <div>
-            <form className="message-area" onSubmit={this.sendMessage}>
-              <input
-                type="text"
-                name="message"
-                id="message-text"
-                value={this.state.message}
-                onChange={this.handleChange}
-                rows="2"
-              />
-              <button className="submit-message" type="submit">
-                <i className="fa fa-send fa-2x" aria-hidden="true"></i>
-              </button>
-            </form>
-          </div>
+          <form className="message-area" onSubmit={this.sendMessage}>
+            {this.state.isTyping ? <span> Is typing...</span> : <div></div>}
+            <input
+              type="text"
+              name="message"
+              id="message-text"
+              value={this.state.message}
+              onChange={this.handleChange}
+              onKeyPress={this.isTyping}
+              rows="2"
+            />
+            <button className="submit-message" type="submit">
+              <i
+                class="far fa-paper-plane send-plane fa-2x"
+                aria-hidden="true"
+              ></i>
+            </button>
+          </form>
         </div>
       </div>
     );

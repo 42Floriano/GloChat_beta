@@ -130,7 +130,7 @@ io.on("connection", socket => {
   console.log("Client connected", socket.id);
 
   socket.on("new_user", user => {
-    console.log("NEW USER")
+    console.log("NEW USER");
     socket.user = user;
     emitUsers();
   });
@@ -170,6 +170,14 @@ io.on("connection", socket => {
       .catch(err => console.log(err));
   });
 
+  // socket.on("typing", user2 => {
+  //   io.to(`${getUserSocket(user2)}`).emit("typing", user2);
+  // });
+
+  // socket.on("stopped-typing", user2 => {
+  //   io.to(`${getUserSocket(user2)}`).emit("stopped-typing", user2);
+  // });
+
   socket.on("message", ({ message, userId, username, roomId, socketId }) => {
     console.log("USER ID, MESSAGE SENT    ", userId, typeof userId);
     Room.findOne({ _id: roomId })
@@ -185,7 +193,7 @@ io.on("connection", socket => {
           const newMessage = result[0].translations;
 
           const newAndImprovedMessage = newMessage[0].text;
-// salut
+          // salut
           Message.create({
             text: message,
             translation: newAndImprovedMessage,
@@ -199,13 +207,13 @@ io.on("connection", socket => {
               Room.findOneAndUpdate(
                 { _id: roomId },
                 { $push: { messages: message._id } }
-              ).then(room => { });
+              ).then(room => {});
             })
             .catch(err => console.log(err));
         });
       });
   });
-  socket.on("disconnect", function () {
+  socket.on("disconnect", function() {
     emitUsers();
     console.log("User disconnected");
   });
