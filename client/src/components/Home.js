@@ -27,7 +27,7 @@ class Home extends Component {
 
             <Carousel.Caption className="caption">
               <h3>Simple</h3>
-              <p>Simply Login with your google account or sign up.</p>
+              <p>Simply log in with your google account or sign up.</p>
             </Carousel.Caption>
           </Carousel.Item>
           <Carousel.Item>
@@ -39,7 +39,7 @@ class Home extends Component {
 
             <Carousel.Caption className="caption">
               <h3>Chat Globally</h3>
-              <p>Connect to people from all around the World!</p>
+              <p>Connect to people from all around the World.</p>
             </Carousel.Caption>
           </Carousel.Item>
           <Carousel.Item>
@@ -52,8 +52,8 @@ class Home extends Component {
             <Carousel.Caption className="caption">
               <h3>Auto-Translation</h3>
               <p>
-                Let us take care of everything and chat live in your mother tongue
-                !
+                Let us take care of everything and chat live in your mother tongue. <br></br>
+                We speak more than 90 languages !
               </p>
             </Carousel.Caption>
           </Carousel.Item>
