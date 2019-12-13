@@ -15,7 +15,7 @@ class Home extends Component {
             />
             <Carousel.Caption className="caption">
               <h3>GloChat</h3>
-              <p>It's never been so easy !</p>
+              <p>It's never been that easy!</p>
             </Carousel.Caption>
           </Carousel.Item>
           <Carousel.Item>
@@ -53,7 +53,7 @@ class Home extends Component {
               <h3>Auto-Translation</h3>
               <p>
                 Let us take care of everything and chat live in your mother tongue. <br></br>
-                We speak more than 90 languages !
+                We speak more than 90 languages!
               </p>
             </Carousel.Caption>
           </Carousel.Item>
